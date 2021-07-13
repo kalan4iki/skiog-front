@@ -1,0 +1,8 @@
+// app global css in SCSS form
+@font-face {
+  font-family: MyFont;
+  src: url(./fonts/MyFont.ttf);
+}
+body {
+  font-family: 'MyFont';
+}
