@@ -85,7 +85,7 @@
                     <p>Текст назначения: {{ term.desck }}</p>
                   </q-card-section>
                   <q-card-actions>
-                    <q-btn color='grey' size="sm" disable>Добавить подрезолюцию</q-btn>
+                    <q-btn color='grey' size="sm" disable v-if='$init_perm({ type: "problem", name: "user_dispatcher"})'>Добавить подрезолюцию</q-btn>
                     <q-btn color='grey' size="sm" disable>Ответить</q-btn>
                     <q-space />
                     Резолюций: 0. Ответов: 0
@@ -93,6 +93,7 @@
                 </q-card>
                 <q-menu
                   context-menu
+                  v-if='$init_perm({ type: "problem", name: "user_moderator"})'
                 >
                   <q-list dense style="min-width: 100px">
                     <q-item clickable v-close-popup>

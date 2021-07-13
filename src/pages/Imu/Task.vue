@@ -24,22 +24,22 @@
                       Обновить карточку
                     </q-tooltip>
                   </q-btn>
-                  <q-btn icon="photo">
+                  <q-btn icon="photo" disable>
                     <q-tooltip>
                       Файлы по задаче
                     </q-tooltip>
                   </q-btn>
-                  <q-btn icon="arrow_upward">
+                  <q-btn icon="arrow_upward" disable>
                     <q-tooltip>
                       Подписаться на задачу
                     </q-tooltip>
                   </q-btn>
-                  <q-btn icon="chat" >
+                  <q-btn icon="chat" disable>
                     <q-tooltip>
                       Комментарии
                     </q-tooltip>
                   </q-btn>
-                  <q-btn icon="timeline">
+                  <q-btn icon="timeline" disable>
                     <q-tooltip>
                       История
                     </q-tooltip>
