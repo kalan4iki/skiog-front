@@ -14,7 +14,8 @@ const routes = [
       { path: '/imu/task/:pk', name: 'imu_task', component: () => import('src/pages/Imu/Task.vue'), meta: { requiresAuth: true } },
       { path: '/imu/archive', name: 'imu_archive', component: () => import('src/pages/Imu/Archive.vue'), meta: { requiresAuth: true } },
       { path: '/imu/template', name: 'imu_template', component: () => import('src/pages/Imu/Template.vue'), meta: { requiresAuth: true } },
-      { path: '/block/main', name: 'block_main', component: () => import('src/pages/Block/Block.vue'), meta: { requiresAuth: true } }
+      { path: '/block/main', name: 'block_main', component: () => import('src/pages/Block/Block.vue'), meta: { requiresAuth: true } },
+      { path: '/maps', name: 'maps', component: () => import('src/pages/Maps.vue'), meta: { requiresAuth: true } }
     ]
   },
   { path: '/login', name: 'login', component: () => import('pages/Login.vue') },

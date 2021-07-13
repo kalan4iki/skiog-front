@@ -52,32 +52,7 @@ export default {
     this.returnUrl = this.$route.query.returnUrl || '/';
   },
   mounted () {
-    // this.$store.dispatch('logout')
     this.startAnimation()
-    // Particles.init({
-    //   selector: '.background',
-    //   responsive: [
-    //     {
-    //       breakpoint: 768,
-    //       options: {
-    //         maxParticles: 200,
-    //         color: '#48F2E3',
-    //         connectParticles: false
-    //       }
-    //     }, {
-    //       breakpoint: 425,
-    //       options: {
-    //         maxParticles: 100,
-    //         connectParticles: true
-    //       }
-    //     }, {
-    //       breakpoint: 320,
-    //       options: {
-    //         maxParticles: 0 // disables particles.js
-    //       }
-    //     }
-    //   ]
-    // })
   },
   computed: {
     heightSize () {
@@ -106,14 +81,6 @@ export default {
         }
       )
     },
-    login2 () {
-      const data = { username: this.username, password: this.password, returnUrl: this.returnUrl, router: this.$router }
-      this.$store.dispatch('login', data)
-        .then(() => {
-          // console.log(this.$store.state)
-          this.$router.replace(this.returnUrl)
-        })
-    },
     login () {
       const requestOptions = { username: this.username, password: this.password }
 
@@ -134,8 +101,6 @@ export default {
       })
       .catch(error => {
         if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
           var mes = ''
           for (const key in error.response.data) {
             mes = error.response.data[key]
@@ -147,18 +112,11 @@ export default {
           console.log(error.response.data);
           console.log(error.response.status);
         } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
           console.log(error.request);
         } else {
-          // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
       })
-      .then(function () {
-        // always executed
-      });
     }
   }
 }
