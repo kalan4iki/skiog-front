@@ -17,7 +17,7 @@
         </q-toolbar-title>
         <div>
           <q-btn-group style="animation: fadeInDown; animation-duration: 3s;">
-            <q-btn color="primary" icon="support_agent"><q-tooltip>Обращение в тех. поддержку</q-tooltip></q-btn>
+            <q-btn color="primary" icon="support_agent" @click="dialog = true"><q-tooltip>Обращение в тех. поддержку</q-tooltip></q-btn>
             <q-btn-dropdown color="white" text-color="black" icon="person" :label="names">
               <q-list dense>
                 <q-item clickable :to='"/profile"' v-close-popup>
@@ -56,6 +56,26 @@
         <router-view />
       </transition>
     </q-page-container>
+    <q-dialog v-model="dialog" transition-show="jump-up" transition-hide="jump-down">
+      <q-card style="width: 800px;">
+        <q-form @submit="send_tp">
+          <q-card-section>
+            <div class="text-h6">Отправка заявки в тех. поддержку</div>
+          </q-card-section>
+          <q-linear-progress v-if="dialog_load" indeterminate size="20px" color="accent" class="q-mt-sm" />
+          <q-separator />
+          <q-card-section>
+            <q-input v-model="input_tp" class="q-pb-md" label="Текст обращения" rows="4" type="textarea" square outlined :rules="[ val => val && val.length > 0 || 'Пожалуйста, напишите что-нибудь']"></q-input>
+            <q-banner class="shadow-3">Просьба описывать полностью проблему.</q-banner>
+          </q-card-section>
+          <q-card-actions>
+            <q-space />
+            <q-btn>Закрыть</q-btn>
+            <q-btn type="submit">Отправить</q-btn>
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
@@ -69,7 +89,11 @@ export default {
     return {
       leftDrawerOpen: false,
       names: this.$store.getters.getUserInfo.full_name,
-      miniState: false
+      miniState: false,
+      dialog: false,
+      dialog_load: false,
+      input_tp: ''
+
     }
   },
   computed: {
@@ -87,6 +111,19 @@ export default {
     )
   },
   methods: {
+    send_tp: function () {
+      this.dialog_load = true
+      this.$axios({ method: 'POST', url: 'create_bug/', data: { message: this.input_tp } })
+        .then((response) => {
+          this.$q.notify({
+            type: 'info',
+            message: `Обращение отправлено. Номер обращения ${response.data.id}.`
+          })
+          this.input_tp = ''
+          this.dialog = false
+          this.dialog_load = false
+        })
+    },
     test () {
     },
     logout () {
