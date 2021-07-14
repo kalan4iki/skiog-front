@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lff">
     <q-header elevated class="bg-grey">
-      <q-toolbar class="bg-white text-black" >
+      <q-toolbar class="bg-white text-black" style="animation: fadeInDown; animation-duration: 1s;">
         <q-btn
           flat
           dense
@@ -9,13 +9,14 @@
           icon="menu"
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
+          style="animation: fadeInLeft; animation-duration: 2s;"
         />
 
-        <q-toolbar-title class="my-title" style="animation: flipInX; animation-duration: 1s;">
+        <q-toolbar-title class="my-title" style="animation: fadeInDown; animation-duration: 2s;">
           SKIOG
         </q-toolbar-title>
         <div>
-          <q-btn-group>
+          <q-btn-group style="animation: fadeInDown; animation-duration: 3s;">
             <q-btn color="primary" icon="support_agent"><q-tooltip>Обращение в тех. поддержку</q-tooltip></q-btn>
             <q-btn-dropdown color="white" text-color="black" icon="person" :label="names">
               <q-list dense>
@@ -42,7 +43,7 @@
       </q-toolbar>
     </q-header>
     <q-drawer ref="leftDrawer"  show-if-above elevated v-model="leftDrawerOpen" :mini="miniState">
-      <q-scroll-area class="fit shadow-3">
+      <q-scroll-area class="fit shadow-3" style="animation: fadeInLeft; animation-duration: 1s;">
         <Menu />
       </q-scroll-area>
     </q-drawer>

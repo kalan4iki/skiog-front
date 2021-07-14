@@ -1,5 +1,5 @@
 <template>
-  <q-card>
+  <q-card style="animation: fadeIn; animation-duration: 1s;">
     <q-card-section :class="'bg-' + this.color">
       <div>
         <q-spinner-gears v-if='loading' color="black" size="3em" />

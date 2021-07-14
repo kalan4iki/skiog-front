@@ -7,7 +7,8 @@
             xml:space="preserve" width="128px" height="128px"
             v-html="logoMethod">
         </svg>
-        <h4>Форма входа</h4>
+        <h4 class="q-mb-xs q-mt-md">Форма входа</h4>
+        <h4 class="q-mb-xs q-mt-xs">С К И О Г</h4>
       </q-card-section>
       <q-form @submit="login" style="animation: jackInTheBox; animation-duration: 1s;">
         <q-card-section class="q-pa-md">

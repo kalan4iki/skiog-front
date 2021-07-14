@@ -139,25 +139,21 @@
                       Фото обращения
                     </q-tooltip>
                   </q-btn>
-                  <a v-if='this.$init_perm({ type: "problem", name: "user_supermoderator"})' target="_blank" :href="'https://skiog.ru/admin/problem/problem/' + this.obr.pk + '/change/'" style="text-decoration: none; color: black;">
-                    <q-btn flat icon="person" >
-                      <q-tooltip>
-                        В кабинет администратора
-                      </q-tooltip>
-                    </q-btn>
-                  </a>
+                  <q-btn v-if='this.$init_perm({ type: "problem", name: "user_supermoderator"})' flat icon="person" @click="open_page('https://skiog.ru/admin/problem/problem/' + obr.pk + '/change/')" >
+                    <q-tooltip>
+                      В кабинет администратора
+                    </q-tooltip>
+                  </q-btn>
                   <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' disable flat icon="arrow_upward" >
                     <q-tooltip>
                       На обновление
                     </q-tooltip>
                   </q-btn>
-                  <a target="_blank" :href="'https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + obr.nomdobr" style="text-decoration: none; color: black;">
-                    <q-btn flat icon="arrow_forward">
-                      <q-tooltip>
-                        Перейти на добродел
-                      </q-tooltip>
-                    </q-btn>
-                  </a>
+                  <q-btn flat icon="arrow_forward"  @click="open_page('https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + obr.nomdobr)">
+                    <q-tooltip>
+                      Перейти на добродел
+                    </q-tooltip>
+                  </q-btn>
                 </q-btn-group>
               </div>
             </div>
@@ -397,7 +393,7 @@
 <script>
 import Ty from 'components/dialogs/appeal/Ty_app.vue'
 import Fact from 'components/dialogs/appeal/Fact.vue'
-
+import { openURL } from 'quasar'
 export default {
   name: 'Number',
   components: { Ty, Fact },
@@ -459,6 +455,9 @@ export default {
 
   },
   methods: {
+    open_page: function (urls) {
+      openURL(urls)
+    },
     // date_rules: v => /^-?[0-3]\d+\.[0-1]\d\.[\d]$/.test(v),
     date_app: v => (this.dialogs_data.term.dop && /[0-1]\d\.[0-1]\d\.[0-4]\d/.test(v)) || 'Не правильный формат даты, нужен yyyy.mm.dd.',
     go_back: function () {
