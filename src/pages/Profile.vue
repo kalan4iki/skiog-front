@@ -66,6 +66,7 @@
   </q-page>
 </template>
 <script>
+// TODO: Сделать подключение к оповещениям (TELEGRAM, BROWSER)
 export default {
   name: 'Profile'
 }

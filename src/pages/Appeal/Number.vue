@@ -9,7 +9,7 @@
         </q-btn>
       </div>
       <div class="col-12 col-sm-8 col-md-6" style="text-align: right;">
-        <q-btn-group>
+        <q-btn-group style="animation: fadeInRight; animation-duration: 1s;">
           <q-btn icon="refresh" @click='refresh'>
             <q-tooltip>
               Обновить карточку

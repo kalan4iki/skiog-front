@@ -13,7 +13,7 @@
         />
 
         <q-toolbar-title class="my-title" style="animation: fadeInDown; animation-duration: 2s;">
-          SKIOG
+          С К И О Г
         </q-toolbar-title>
         <div>
           <q-btn-group style="animation: fadeInDown; animation-duration: 3s;">

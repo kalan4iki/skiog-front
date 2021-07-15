@@ -80,7 +80,7 @@
                       <q-item clickable v-close-popup @click="opendialogfact(props.row.pk)">
                         <q-item-section>Добавить факт</q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup>
+                      <q-item clickable v-close-popup @click="open_page('https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + props.row.nomdobr)">
                         <q-item-section>Перейти на добродел</q-item-section>
                       </q-item>
                       <q-separator />
@@ -136,7 +136,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <Tyapp v-model="dialogs.to" :pk="inputTO" />
+    <Tyapp v-model="dialogs.to" :pk="inputTO" @refresh='load_table'/>
     <Fact v-model="dialogs.fact" :pk="inputfact" />
   </q-page>
 </template>
@@ -145,6 +145,7 @@
 import Tyapp from 'src/components/Dialogs/appeal/Ty_app.vue'
 import Fact from 'src/components/Dialogs/appeal/Fact.vue'
 import fileDownload from 'js-file-download'
+import { openURL } from 'quasar'
 export default {
   name: 'Appeal',
   components: { Tyapp, Fact },
@@ -207,6 +208,9 @@ export default {
     }
   },
   methods: {
+    open_page: function (urls) {
+      openURL(urls)
+    },
     clear_filt: function () {
       this.dialogs_data.filt = { temat: null, status: null, ciogv: null }
       this.load_table()
