@@ -70,7 +70,7 @@
           </q-card-section>
           <q-card-actions>
             <q-space />
-            <q-btn>Закрыть</q-btn>
+            <q-btn v-close-popup>Закрыть</q-btn>
             <q-btn type="submit">Отправить</q-btn>
           </q-card-actions>
         </q-form>

@@ -15,11 +15,6 @@
               Обновить карточку
             </q-tooltip>
           </q-btn>
-          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="fact_check" @click="dialogs.fact = true">
-            <q-tooltip>
-              Добавить факт
-            </q-tooltip>
-          </q-btn>
           <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="add_box" @click="dialogs.term = true">
             <q-tooltip>
               Добавить назначение
@@ -28,6 +23,11 @@
           <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="file_download" @click="dialogs.to = true">
             <q-tooltip>
               Назначить ТО
+            </q-tooltip>
+          </q-btn>
+          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="fact_check" @click="dialogs.fact = true">
+            <q-tooltip>
+              Добавить факт
             </q-tooltip>
           </q-btn>
           <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' :icon="this.obr.connect ? 'notifications' : 'notifications_off'" @click="connect_change">
