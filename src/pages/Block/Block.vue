@@ -193,12 +193,6 @@ export default {
       const data = { status_type: statusType, subscription: subscription.toJSON(), browser: browser }
       this.$axios({ method: 'POST', url: this.subscribe.url, headers: { 'Content-Type': 'application/json' }, data: JSON.stringify(data) })
         .then(callback)
-      // fetch(this.subscribe.url, {
-      //   method: 'post',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      //   credentials: 'include'
-      // }).then(callback)
     },
     initialiseState: function (reg) {
       const self = this
@@ -397,7 +391,7 @@ export default {
           self.initialiseState(reg)
         })
     } else {
-      this.subscribe.message('Оповещения в ващем браузере не поддерживаются.')
+      this.subscribe.message = 'Оповещения в ващем браузере не поддерживаются'
       this.subscribe.status = true
     }
   }
