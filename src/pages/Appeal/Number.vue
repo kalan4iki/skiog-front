@@ -391,8 +391,8 @@
   </q-page>
 </template>
 <script>
-import Ty from './components/dialogs/appeal/Ty_app.vue'
-import Fact from './components/dialogs/appeal/Fact.vue'
+import Ty from 'components/Dialogs/Appl/Ty_app.vue'
+import Fact from 'components/Dialogs/Appl/Fact.vue'
 import { openURL } from 'quasar'
 export default {
   name: 'Number',

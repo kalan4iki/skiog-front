@@ -98,7 +98,7 @@
 <script>
 /* eslint-disable */
 import ViewobrVue from 'components/Dialogs/Block/Viewobr.vue'
-import AddobrVue from 'src/components/Dialogs/Block/Addobr.vue'
+import AddobrVue from 'components/Dialogs/Block/Addobr.vue'
 
 export default {
   name: 'BlockMain',

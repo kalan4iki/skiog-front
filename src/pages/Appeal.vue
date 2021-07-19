@@ -142,8 +142,8 @@
 </template>
 
 <script>
-import Tyapp from './components/Dialogs/appeal/Ty_app.vue'
-import Fact from './components/Dialogs/appeal/Fact.vue'
+import Tyapp from 'components/Dialogs/Appl/Ty_app.vue'
+import Fact from 'components/Dialogs/Appl/Fact.vue'
 import fileDownload from 'js-file-download'
 import { openURL } from 'quasar'
 export default {
