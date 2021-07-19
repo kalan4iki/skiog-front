@@ -20,7 +20,7 @@
             <q-btn color="primary" icon="support_agent" @click="dialog = true"><q-tooltip>Обращение в тех. поддержку</q-tooltip></q-btn>
             <q-btn-dropdown color="white" text-color="black" icon="person" :label="names">
               <q-list dense>
-                <q-item clickable :to='"/profile"' v-close-popup>
+                <q-item clickable :to='"/profile"' v-close-popup disable>
                   <q-item-section avatar>
                     <q-icon color="black" name="person" />
                   </q-item-section>
