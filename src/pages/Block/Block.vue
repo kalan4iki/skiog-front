@@ -203,15 +203,15 @@ export default {
     initialiseState: function (reg) {
       const self = this
       if (Notification.permission === 'denied') {
-        this.subscribe.message = 'Вы заблокировали доступ к уведомлениям'
-        this.subscribe.text_btn = 'Подписаться'
-        this.subscribe.status = true
+        self.subscribe.message = 'Вы заблокировали доступ к уведомлениям'
+        self.subscribe.text_btn = 'Подписаться'
+        self.subscribe.status = true
         return
       }
       if (!('PushManager' in window)) {
-        this.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
-        this.subscribe.text_btn = 'Подписаться'
-        this.subscribe.status = true
+        self.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
+        self.subscribe.text_btn = 'Подписаться'
+        self.subscribe.status = true
         return
       }
       reg.pushManager.getSubscription().then(
@@ -229,9 +229,9 @@ export default {
           }
         })
       if (!!(reg.showNotification)) {
-        this.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
-        this.subscribe.text_btn = 'Подписаться'
-        this.subscribe.status = false
+        self.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
+        self.subscribe.text_btn = 'Подписаться'
+        self.subscribe.status = false
         return
       }
     },
