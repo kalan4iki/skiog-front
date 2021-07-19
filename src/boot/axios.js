@@ -3,7 +3,7 @@ import Vue from 'vue'
 import axios from 'axios'
 
 let config = {
-  baseURL: "http://192.168.10.82/api/rest/",
+  baseURL: "http://odin.skiog.ru/api/rest/",
   // timeout: 60 * 1000, // Timeout
   withCredentials: true, // Check cross-site Access-Control
 }
