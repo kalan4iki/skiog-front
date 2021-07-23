@@ -10,7 +10,7 @@
               </div>
               <q-space />
               <div class="col-4" style="text-align: right;">
-                <q-btn-group >
+                <!-- <q-btn-group >
                   <q-btn color="grey-10" icon="edit" >
                     <q-tooltip>
                       Редактировать
@@ -21,7 +21,7 @@
                       Заблокировать
                     </q-tooltip>
                   </q-btn>
-                </q-btn-group>
+                </q-btn-group> -->
               </div>
             </div>
           </q-card-section>
@@ -35,10 +35,10 @@
           <q-card-section>
             <div class="row justify-between">
               <div class="col-4">
-                <div class="text-h6">Разрешения</div>
+                <div class="text-h6">Группы</div>
               </div>
               <q-space />
-              <div class="col-4" style="text-align: right;">
+              <!-- <div class="col-4" style="text-align: right;">
                 <q-btn-group >
                   <q-btn color="grey-10" icon="add" >
                     <q-tooltip>
@@ -46,7 +46,7 @@
                     </q-tooltip>
                   </q-btn>
                 </q-btn-group>
-              </div>
+              </div> -->
             </div>
           </q-card-section>
         </q-card>

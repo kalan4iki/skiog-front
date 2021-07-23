@@ -5,7 +5,6 @@ export * from './user.service'
   </div>
 </template>
 <script>
-import Vue from 'vue'
 export default {
   name: 'App',
   created () {
@@ -16,16 +15,16 @@ export default {
       this.$router.push('/login')
     }
     this.$root.$on('logout', cb)
-    Vue.prototype.$init_perm = function (perm) {
-      const userperms = this.$store.getters.getPermissions
-      if (userperms[perm.type] === 'superuser') {
-        return true
-      } else if (userperms[perm.type].includes(perm.name)) {
-        return true
-      } else {
-        return false
-      }
-    }
+    // Vue.prototype.$init_perm = function (perm) {
+    //   const userperms = this.$store.getters.getPermissions
+    //   if (userperms[perm.type] === 'superuser') {
+    //     return true
+    //   } else if (userperms[perm.type].includes(perm.name)) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
   }
 }
 

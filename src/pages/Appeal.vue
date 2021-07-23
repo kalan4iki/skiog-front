@@ -37,6 +37,7 @@
             <q-table
               :data="data"
               :columns="columns"
+              dense
               row-key="nomdobr"
               :pagination="initialPagination"
               bordered
@@ -62,6 +63,10 @@
                     </div>
                     <div v-else-if="column.name == 'pk'">
                       <q-btn flat :to="`/obr/${props.row.nomdobr}`" color="blue">{{ props.row[column.name] }}</q-btn>
+                    </div>
+                    <div v-else-if="column.name == 'chats'">
+                      <div v-if='props.row[column.name]'><q-icon name="done" color="positive" size='md'/></div>
+                      <div v-else><q-icon name="close" class="text-red" size='md'/></div>
                     </div>
                     <div v-else style="">
                       {{ props.row[column.name] }}
@@ -160,7 +165,7 @@ export default {
         { label: 'Подкатегория', name: 'podcat__name', field: 'podcat__name', align: 'left', style: 'max-width: 200px; white-space: normal' },
         { label: 'Статус в доброделе', name: 'status__name', align: 'left', field: 'status__name', style: 'max-width: 100px; white-space: normal' },
         { label: 'Текст', name: 'text', field: 'text', align: 'left' },
-        { label: 'Сообщения', name: 'message', field: 'message', sortable: false }
+        { label: 'Сообщения', name: 'chats', field: 'chats', align: 'center', sortable: false }
       ],
       data: [
       ],

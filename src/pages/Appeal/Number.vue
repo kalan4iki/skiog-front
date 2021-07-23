@@ -589,7 +589,6 @@ export default {
         })
         .catch(error => {
           if (error.response.status === 403) {
-            console.log(error.response)
             this.$q.notify({
               type: 'negative',
               message: error.response.data.error
@@ -605,8 +604,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this)
-    // this.$store.commit('someMutation')
     this.get_base()
   }
 }

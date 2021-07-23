@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-bind:value='value' v-on:hide="close" v-on:show="shows" transition-show="flip-left" transition-hide="flip-left">
+  <q-dialog v-bind:value='value' v-on:hide="close" v-on:show="shows" transition-show="slide-left" transition-hide="jump-left">
     <q-card>
       <q-form @submit="add_ty">
         <q-card-section>
