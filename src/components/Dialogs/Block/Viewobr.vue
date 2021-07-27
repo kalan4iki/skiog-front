@@ -78,14 +78,20 @@
                   readonly
                 />
               </div>
-              <div class="col-12 col-sm-4 col-md-4 q-pb-md q-pl-xs q-pr-xs">
-                <q-btn class="full-width" :disable='!obr.image' color="indigo" label="Скачать файлы" />
+              <div class="col-12 col-sm-6 col-md-6 q-pb-md q-pl-xs q-pr-xs">
+                <q-btn class="full-width" @click="down_files" :disable='!obr.message || !obr.files_message' color="indigo" label="Скачать файлы" />
               </div>
-              <div class="col-12 col-sm-4 col-md-4 q-pb-md q-pl-xs q-pr-xs">
-                <q-btn class="full-width" :disable='!obr.image' color="indigo" label="Скачать файлы в сообщениях" />
-              </div>
-              <div class="col-12 col-sm-4 col-md-4 q-pb-md q-pl-xs q-pr-xs">
+              <div class="col-12 col-sm-6 col-md-6 q-pb-md q-pl-xs q-pr-xs">
                 <q-btn class="full-width" :disable='!obr.message' color="indigo" @click="dialogs.viewmes = true" label="Сообщения" />
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 q-pb-md q-pl-xs q-pr-xs">
+                <q-banner class="bg-warning text-black" v-if="obr.files_message">
+                  <template v-slot:avatar>
+                    <q-icon name="warning" color="white" />
+                  </template>
+                  <div class="text-h6">Внимание!</div>
+                  Есть файлы в сообщениях, нажмите "скачать файлы".
+                </q-banner>
               </div>
             </div>
           </q-page>
@@ -100,6 +106,7 @@
 <script>
 import AddmessageVue from './Addmessage.vue'
 import ViewmessVue from './Viewmess.vue'
+import fileDownload from 'js-file-download'
 
 export default {
   name: 'Viewobr',
@@ -122,12 +129,21 @@ export default {
         datebzm: '',
         image: false,
         message: false,
+        files_message: false,
         times: null
       },
       statoptions: []
     }
   },
+  computed: {
+  },
   methods: {
+    down_files: function () {
+      this.$axios({ method: 'GET', url: 'block/downimage_new/' + this.obr.nomd, responseType: 'blob' })
+        .then((response) => {
+          fileDownload(response.data, `block-${this.obr.nomd}.zip`)
+        })
+    },
     close: function () {
       this.$emit('input', false)
     },

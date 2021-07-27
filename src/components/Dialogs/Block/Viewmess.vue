@@ -19,6 +19,25 @@
             :loading='loading'
             separator='cell'
           >
+            <template v-slot:body="props">
+                <q-tr :props="props">
+                  <q-td v-for='column in columns' :key="column.name" :props="props" class="word-wrap: break-word;">
+                    <div style="">
+                      {{ props.row[column.name] }}
+                    </div>
+                  </q-td>
+                  <q-menu
+                    context-menu
+                  >
+                    <q-list dense style="min-width: 100px">
+                      <q-item clickable v-close-popup @click="delete_message(props.row.pk)">
+                        <q-item-section>Удалить</q-item-section>
+                      </q-item>
+                      <q-separator />
+                    </q-list>
+                  </q-menu>
+                </q-tr>
+            </template>
           </q-table>
         </q-page>
       </q-page-container>
@@ -31,6 +50,16 @@ export default {
   name: 'Viewmess',
   props: { value: Boolean, task: Object },
   methods: {
+    delete_message: function (pk) {
+      this.$axios({ method: 'POST', url: 'block/del_message_rest/' + pk })
+        .then((response) => {
+          this.$q.notify({
+            type: 'positive',
+            message: response.data.text
+          })
+          this.viewmes()
+        })
+    },
     closeall: function () {
       this.$emit('closeall')
       this.$emit('input', false)

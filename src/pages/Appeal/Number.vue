@@ -8,39 +8,39 @@
           </q-tooltip>
         </q-btn>
       </div>
-      <div class="col-12 col-sm-8 col-md-6" style="text-align: right;">
-        <q-btn-group style="animation: fadeInRight; animation-duration: 1s;">
-          <q-btn icon="refresh" @click='refresh'>
-            <q-tooltip>
-              Обновить карточку
-            </q-tooltip>
-          </q-btn>
-          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="add_box" @click="dialogs.term = true">
+      <div class="col-12 col-sm-8 col-md-6" style="text-align: right; animation: fadeInDown; animation-duration: 1s;">
+        <q-btn class="q-mr-xs" icon="refresh" @click='refresh'>
+          <q-tooltip>
+            Обновить карточку
+          </q-tooltip>
+        </q-btn>
+        <q-btn-group v-if='this.$init_perm({ type: "problem", name: "user_moderator"})'>
+          <q-btn icon="add_box" @click="dialogs.term = true">
             <q-tooltip>
               Добавить назначение
             </q-tooltip>
           </q-btn>
-          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="file_download" @click="dialogs.to = true">
+          <q-btn icon="file_download" @click="dialogs.to = true">
             <q-tooltip>
               Назначить ТО
             </q-tooltip>
           </q-btn>
-          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' icon="fact_check" @click="dialogs.fact = true">
+          <q-btn icon="fact_check" @click="dialogs.fact = true">
             <q-tooltip>
               Добавить факт
             </q-tooltip>
           </q-btn>
-          <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' :icon="this.obr.connect ? 'notifications' : 'notifications_off'" @click="connect_change">
+          <q-btn :icon="this.obr.connect ? 'notifications' : 'notifications_off'" @click="connect_change">
             <q-tooltip>
               Есть обратная связь
             </q-tooltip>
           </q-btn>
-          <q-btn disable icon="print">
-            <q-tooltip>
-              Печатать
-            </q-tooltip>
-          </q-btn>
         </q-btn-group>
+        <q-btn class="q-ml-xs" disable icon="print">
+          <q-tooltip>
+            Печатать
+          </q-tooltip>
+        </q-btn>
       </div>
     </div>
     <div class="row">
@@ -76,7 +76,7 @@
               <q-skeleton height="100px" animation="pulse" />
             </div>
             <div v-else>
-              <q-expansion-item v-for='term in terms' :key="term.pk" popup :label="`Ответственный: ${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}`" :caption="`Дата создания - ${term.datecre}. Статус - ${term.statuss}. Срок исполнения - ${term.date}`">
+              <q-expansion-item v-for='term in terms' :key="term.pk" :header-class="term.answers !== '0' ? 'text-positive': ''" popup :label="`Ответственный: ${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}`" :caption="`Дата создания - ${term.datecre}. Статус - ${term.statuss}. Срок исполнения - ${term.date}`">
                 <q-separator />
                 <q-card>
                   <q-card-section>
@@ -85,24 +85,22 @@
                     <p>Текст назначения: {{ term.desck }}</p>
                   </q-card-section>
                   <q-card-actions>
-                    <q-btn color='grey' size="sm" disable>Ответить</q-btn>
+                    <q-btn-group>
+                      <q-btn color='grey' size="sm" @click="add_answer(term.pk, 'view')">Ответить</q-btn>
+                      <q-btn  v-show="term.answers > 0 & $init_perm({ type: 'problem', name: 'user_moderator'})" color="primary" size="sm" label="Просмотреть ответы" @click="get_term_answer(term.pk)" />
+                    </q-btn-group>
                     <q-space />
-                    Ответов: #
+                    <q-chip v-if="term.answers === '0'" color="warning">Ответов: {{ term.answers }}</q-chip>
+                    <q-chip v-else color="positive">Ответов: {{ term.answers }}</q-chip>
                   </q-card-actions>
                 </q-card>
                 <q-menu
                   context-menu
                   v-if='$init_perm({ type: "problem", name: "user_moderator"})'
                 >
-                  <q-list dense style="min-width: 100px">
-                    <q-item clickable v-close-popup>
+                  <q-list dense style="min-width: 100px" v-if="$init_perm({ type: 'problem', name: 'user_moderator'})">
+                    <q-item disable clickable v-close-popup>
                       <q-item-section>Редактировать</q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup>
-                      <q-item-section>Посмотреть ответы</q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup>
-                      <q-item-section>Утвердить</q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="del_term(term.pk)">
                       <q-item-section>Удалить</q-item-section>
@@ -386,6 +384,88 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="dialogs.answer" transition-show="slide-up" transition-hide="slide-down">
+      <q-card style="width: 700px;">
+        <q-form @submit="add_answer(dialogs_data.answer.term_id, 'submit')">
+          <q-card-section class="text-center"><div class="text-h6">Добавление ответа для назначения</div></q-card-section>
+          <q-separator />
+          <q-card-section>
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 q-pb-sm">
+                <q-input
+                  v-model="dialogs_data.answer.text"
+                  label='Комментарий'
+                  square
+                  outlined
+                  rows="4"
+                  type="textarea"
+                  :rules="[val => val !== null && val !== '' || 'Необходим комментарий']"
+                />
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 q-pb-md">
+                <q-file
+                  v-model="dialogs_data.answer.files"
+                  label="Выбрать файлы"
+                  square
+                  outlined
+                  multiple
+                  :filter="checkFileType"
+                  @rejected="onRejected"
+                  :rules="[val => val !== null && val !== '' || 'Прикрепите файл']"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
+              </div>
+            </div>
+          </q-card-section>
+          <q-separator />
+          <q-card-actions align="right">
+            <q-btn v-close-popup label="Закрыть" />
+            <q-btn type="submit" label="Отправить" />
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="dialogs.view_answer">
+      <q-card style="width: 700px;">
+        <q-card-section class="text-center"><div class="text-h6">Просмотр ответов</div></q-card-section>
+        <q-separator />
+        <q-card-section>
+          <q-list>
+            <q-expansion-item v-for="answer in term_answers" :key="answer.pk" :header-class="answer.statuc === '1' ? 'text-positive': answer.statuc === '1' ? 'text-negative': ''" :label="`Ответ №${answer.pk} от ${answer.user}. Статус ответа ${answer.get_status_display}`" :caption="`Дата создания ${answer.datecre}`" default-opened popup >
+              <q-separator />
+              <q-card>
+                <q-card-section>Комментарий ответа: {{ answer.text }}</q-card-section>
+                <q-card-actions align="right">
+                  <q-btn-group>
+                    <q-btn size='sm' color="secondary" label="Скачать файлы" @click="down_files(answer.pk)" />
+                    <q-btn v-show="answer.action" @click="active_answer(answer.pk, '1')" size='sm' color="positive" label="Утвердить" />
+                    <q-btn v-show="answer.action" @click="active_answer(answer.pk, '2')" size='sm' color="negative" label="Отклонить" />
+                  </q-btn-group>
+                </q-card-actions>
+              </q-card>
+              <q-menu
+                  context-menu
+                  v-if='$init_perm({ type: "problem", name: "user_moderator"})'
+                >
+                <q-list dense style="min-width: 100px" v-if="$init_perm({ type: 'problem', name: 'user_moderator'})">
+                  <q-item clickable v-close-popup @click="del_answer(answer.pk)">
+                    <q-item-section>Удалить</q-item-section>
+                  </q-item>
+                  <q-separator />
+                </q-list>
+              </q-menu>
+            </q-expansion-item>
+          </q-list>
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right">
+          <q-btn v-close-popup label="Закрыть" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <Fact v-model="dialogs.fact" :pk="obr.pk" @refresh='get_problem' />
     <Ty v-model="dialogs.to" :pk="obr.pk" @refresh='get_problem' />
   </q-page>
@@ -393,13 +473,14 @@
 <script>
 import Ty from 'components/Dialogs/Appl/Ty_app.vue'
 import Fact from 'components/Dialogs/Appl/Fact.vue'
+import fileDownload from 'js-file-download'
 import { openURL } from 'quasar'
 export default {
   name: 'Number',
   components: { Ty, Fact },
   data () {
     return {
-      dialogs: { term: false, to: false, img: false, fact: false },
+      dialogs: { term: false, to: false, img: false, fact: false, answer: false, view_answer: false },
       date_rul: v => /^-?[\d]+-[0-1]\d-[0-3]\d$/.test(v),
       form_term: null,
       dialogs_data: {
@@ -422,6 +503,11 @@ export default {
         },
         fact: {
           facts: null
+        },
+        answer: {
+          text: null,
+          files: null,
+          term_id: null
         }
       },
       obr: {
@@ -448,13 +534,85 @@ export default {
       orgs: [],
       deps: {},
       users: {},
-      facts: null
+      facts: null,
+      term_answers: null
     }
   },
   computed: {
-
   },
   methods: {
+    down_files: function (pk) {
+      this.$axios({ method: 'GET', url: '/term/answer/downimage/' + pk, responseType: 'blob' })
+        .then((response) => {
+          fileDownload(response.data, `answer-${pk}.zip`)
+        })
+    },
+    del_answer: function (pk) {
+      this.$axios({ method: 'DELETE', url: '/term/answer/' + pk })
+        .then(() => {
+          this.$q.notify({
+            type: 'positive',
+            message: 'Ответ удален'
+          })
+          this.dialogs.view_answer = false
+          this.get_terms()
+        })
+    },
+    active_answer: function (pk, action) {
+      const data = new FormData()
+      data.append('status', action)
+      this.$axios({ method: 'PATCH', url: '/term/answer/' + pk, data: data })
+        .then((response) => {
+          console.log(response)
+          this.dialogs.view_answer = false
+          this.get_terms()
+        })
+    },
+    get_term_answer: function (pk) {
+      this.$axios({ method: 'POST', url: '/term/answers/' + pk })
+        .then((response) => {
+          this.term_answers = response.data
+          this.dialogs.view_answer = true
+        })
+    },
+    checkFileType: function (files) {
+      return files.filter(file => file.type === 'image/png' ^ file.type === 'application/pdf' ^ file.type === 'image/jpeg')
+    },
+    onRejected () {
+      this.$q.notify({
+        type: 'negative',
+        message: 'Неправильный форматы файлов (разрешены pdf, png, jpg)'
+      })
+    },
+    add_answer: function (pk, type) {
+      if (type === 'view') {
+        this.dialogs_data.answer.term_id = pk
+        this.dialogs.answer = true
+      } else {
+        if (this.dialogs_data.answer.files != null) {
+          const formData = new FormData()
+          for (let i = 0; i < this.dialogs_data.answer.files.length; i++) {
+            const file = this.dialogs_data.answer.files[i]
+            formData.append('image', file)
+          }
+          formData.append('text', this.dialogs_data.answer.text)
+          const config = { headers: { 'Content-Type': 'multipart/form-data' } }
+          this.$axios.post('/term/add_answer/' + pk, formData, config)
+            .then((response) => {
+              this.get_terms()
+              this.dialogs.answer = false
+            })
+        } else {
+          const formData = new FormData()
+          formData.append('text', this.dialogs_data.answer.text)
+          this.$axios({ method: 'POST', url: '/term/add_answer/' + pk, data: formData })
+            .then((response) => {
+              this.get_terms()
+              this.dialogs.answer = false
+            })
+        }
+      }
+    },
     open_page: function (urls) {
       openURL(urls)
     },
@@ -542,6 +700,7 @@ export default {
       const data = {}
       data.problem = this.obr.pk
       data.date = this.dialogs_data.term.srok
+      data.user = this.$store.getters.getUserPk
       if (this.dialogs_data.term.text) {
         data.desck = this.dialogs_data.term.text
       }
