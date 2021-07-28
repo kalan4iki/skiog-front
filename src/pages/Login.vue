@@ -51,7 +51,7 @@ export default {
   },
   created () {
     this.returnUrl = this.$route.query.returnUrl || '/';
-    this.$store.commit('logout')
+    this.$store.dispatch('logout')
   },
   mounted () {
     this.startAnimation()
