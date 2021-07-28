@@ -84,7 +84,7 @@ export default {
       )
     },
     login () {
-      const requestOptions = { username: this.username, password: this.password }
+      const requestOptions = { username: this.username.toLowerCase(), password: this.password }
 
       this.$axios.post('/auth/api-token-auth/', requestOptions)
       .then(user => {
