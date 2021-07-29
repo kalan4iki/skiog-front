@@ -109,13 +109,13 @@
         <q-card-section>
           <div class="row">
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.temat" square outlined :options="filter_data.cat" option-value='pk' option-label="text" label="Тематика" />
+              <q-select v-model="dialogs_data.filt.temat" square outlined :options="filter_data.cat" option-value='pk' option-label="name" label="Тематика" />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="text" label="Статус в доброделе" />
+              <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="name" label="Статус в доброделе" />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="text" label="Тер. Управление" />
+              <q-select v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
               <q-input v-model="dialogs_data.filt.dateotv" square outlined label='Дата ответа по доброделу' mask="##.##.####">
