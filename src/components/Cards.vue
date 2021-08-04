@@ -2,7 +2,7 @@
   <q-card style="animation: fadeIn; animation-duration: 1s;">
     <q-card-section :class="'bg-' + this.color">
       <div>
-        <q-spinner-gears v-if='loading' color="black" size="3em" />
+        <q-skeleton v-if='loading' type="circle" />
         <div v-else class="text-h6">{{ number }}</div>
       </div>
       <div :class="`text-subtitle1 text-${colortext}`">{{ title }}</div>

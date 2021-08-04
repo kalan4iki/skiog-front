@@ -51,6 +51,7 @@
                       <q-btn size='sm' color="black" flat icon="message">
                         <q-tooltip
                           anchor="bottom left"
+                          class="bg-black"
                           transition-show="scale"
                           transition-hide="scale"
                         >

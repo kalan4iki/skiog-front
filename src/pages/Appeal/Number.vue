@@ -300,7 +300,7 @@
                     narrow-indicator
                   >
                     <q-tab name="org" label="Организация" />
-                    <q-tab name="dep" disable label="Отдел" />
+                    <q-tab name="dep" label="Отдел" />
                     <q-tab name="user" label="Сотрудник" />
                   </q-tabs>
 
@@ -312,7 +312,7 @@
                     </q-tab-panel>
 
                     <q-tab-panel name="dep">
-                      <q-select disable v-model="dialogs_data.term.dep" :options="deps" option-value='pk' :option-label='(item) => `${item.org}, ${item.name}`' label="Отдел" />
+                      <q-select v-model="dialogs_data.term.dep" :options="deps" option-value='pk' :option-label='(item) => `${item.org}, ${item.name}`' label="Отдел" />
                     </q-tab-panel>
 
                     <q-tab-panel name="user">

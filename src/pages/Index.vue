@@ -1,7 +1,27 @@
 <template>
   <q-page class="q-mt-md q-ml-xs q-mr-xs">
     <!-- <div class="fit column wrap justify-start items-start content-start q-gutter-sm " > -->
-    <div class="row">
+    <div class="row" v-if='loadingcard'>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+      <div class='col-12 col-sm-4 col-md-4 q-pl-xs q-pr-xs q-pb-sm' >
+        <q-skeleton height="100px" />
+      </div>
+    </div>
+    <div class="row" v-else>
       <div :class='`col-12 col-sm-4 col-md-${card.size} q-pl-xs q-pr-xs q-pb-sm`' v-for='card in cardws' :key="card.title" v-bind="card">
         <Cards :title='card.name' :link="card.to" :color="card.color" />
       </div>
@@ -18,37 +38,12 @@ export default {
     this.$axios({ method: 'POST', url: '/main/', data: { type: 'start' } })
       .then(response => {
         this.cardws = response.data
+        this.loadingcard = false
       })
   },
   data () {
     return {
-      cardss: [
-        {
-          title: 'Ответов',
-          number: '0',
-          color: 'grey'
-        },
-        {
-          title: 'Не распределенные обращения',
-          number: '0',
-          color: 'info'
-        },
-        {
-          title: 'Обращения без ТУ',
-          number: '0',
-          color: 'info'
-        },
-        {
-          title: 'Всего не закрытых обращения',
-          number: '0',
-          color: 'info'
-        },
-        {
-          title: 'Всего не закрытых обращения',
-          number: '0',
-          color: 'info'
-        }
-      ],
+      loadingcard: true,
       cardws: []
     }
   }
