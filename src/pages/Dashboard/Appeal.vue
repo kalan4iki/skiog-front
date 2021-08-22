@@ -7,31 +7,81 @@
             <div class="text-h6">Отчёты</div>
           </q-card-section>
           <q-card-section>
-            <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' label="Определенный период" @click="dialogs.per = true" />
-            <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' label="Не закрытые обращения" disable/>
-            <q-btn v-if='this.$init_perm({ type: "problem", name: "user_moderator"})' label="Выгрузка по автору" disable/>
+            <q-banner class="shadow-3 q-mb-sm">
+              <div class="text-h6">Общие</div>
+              <p/>
+              <q-btn-group outline>
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Определенный период" @click="dialogs.per = true" />
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Не закрытые обращения" disable/>
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Выгрузка по автору" disable/>
+              </q-btn-group>
+            </q-banner>
+            <q-banner class="shadow-3">
+              <div class="text-h6">ТО</div>
+              <p/>
+              <q-btn-group outline>
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Отчет за год" />
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Отчет за текущий месяц" />
+              </q-btn-group>
+            </q-banner>
           </q-card-section>
         </q-card>
       </div>
     </div>
-    <div class="row" v-if='this.$init_perm({ type: "problem", name: "user_moderator"})'>
+    <div class="row" v-if='$init_perm({ type: "problem", name: "user_moderator"})'>
       <div class="col-12 col-sm-12 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
         <q-card>
           <q-card-section>
-            <div class="text-h6">Назначения</div>
+            <div class="row justify-between">
+              <div class="col-4 col-sm-4 col-md-4">
+                <div class="text-h6">Назначения</div>
+              </div>
+              <q-space />
+              <div class="col-4 col-sm-4 col-md-4 text-center">
+                <q-btn v-if="!charts.terms" label="Показать график" @click="charts.terms = true" />
+                <q-btn v-else label="Скрыть график" @click="charts.terms = false" />
+              </div>
+            </div>
           </q-card-section>
-          <q-card-section>
+          <q-card-section v-show="charts.terms">
             <Terms />
           </q-card-section>
         </q-card>
       </div>
       <div class="col-12 col-sm-12 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
         <q-card>
-          <q-card-section>
-            <div class="text-h6">Новые обращения</div>
+          <q-card-section class="items-center">
+            <div class="row justify-between">
+              <div class="col-4 col-sm-4 col-md-4">
+                <div class="text-h6">Новые обращения</div>
+              </div>
+              <q-space />
+              <div class="col-4 col-sm-4 col-md-4 text-center">
+                <q-btn v-if="!charts.newobr" label="Показать график" @click="charts.newobr = true" />
+                <q-btn v-else label="Скрыть график" @click="charts.newobr = false" />
+              </div>
+            </div>
           </q-card-section>
-          <q-card-section>
+          <q-card-section v-show="charts.newobr">
             <Newobr />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-sm-12 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
+        <q-card>
+          <q-card-section class="items-center">
+            <div class="row justify-between">
+              <div class="col-4 col-sm-4 col-md-4">
+                <div class="text-h6">График по ТУ</div>
+              </div>
+              <div class="col-4 col-sm-4 col-md-4 text-center">
+                <q-btn v-if="!charts.TO" label="Показать график" @click="charts.TO = true" />
+                <q-btn v-else label="Скрыть график" @click="charts.TO = false" />
+              </div>
+            </div>
+          </q-card-section>
+          <q-card-section v-show="charts.TO">
+            <TO />
           </q-card-section>
         </q-card>
       </div>
@@ -95,16 +145,21 @@
 import fileDownload from 'js-file-download'
 import Terms from 'components/Charts/Terms.vue'
 import Newobr from 'components/Charts/Newobr.vue'
+import TO from 'components/Charts/TO.vue'
 export default {
   name: 'Appeal',
   components: {
     Terms,
-    Newobr
+    Newobr,
+    TO
   },
-  data: () => ({
-    dialogs: { per: false },
-    dialogs_data: { per: { from: null, to: null } }
-  }),
+  data () {
+    return {
+      dialogs: { per: false },
+      dialogs_data: { per: { from: null, to: null } },
+      charts: { terms: false, newobr: false, TO: false }
+    }
+  },
   methods: {
     submit_per: function () {
       const data = new FormData()
@@ -112,7 +167,7 @@ export default {
       data.append('datebefore', this.dialogs_data.per.to)
       data.append('action', '8')
       data.append('front', true)
-      this.$axios({ method: 'POST', url: 'dashboard/', responseType: 'blob', data: data })
+      this.$axios({ method: 'POST', url: 'dashboard/problem', responseType: 'blob', data: data })
         .then((response) => {
           console.log(response)
           fileDownload(response.data, `export-period.xlsx`)

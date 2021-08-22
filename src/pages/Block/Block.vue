@@ -25,13 +25,6 @@
             <q-btn class="full-width" color="indigo-6" icon="refresh" label="Обновить таблицу" @click="get_table" />
           </div>
           <div class="col q-pb-lg">
-           <q-btn class="full-width" color="indigo-6" :label="subscribe.text_btn" :disable='subscribe.status' @click="click_subscr">
-              <q-tooltip>
-                {{ subscribe.message }}
-              </q-tooltip>
-           </q-btn>
-          </div>
-          <div class="col q-pb-lg">
             <q-tabs
               v-model="tab"
               vertical
@@ -96,7 +89,7 @@
 </template>
 
 <script>
-/* eslint-disable */
+
 import ViewobrVue from 'components/Dialogs/Block/Viewobr.vue'
 import AddobrVue from 'components/Dialogs/Block/Addobr.vue'
 
@@ -174,61 +167,10 @@ export default {
         page: 1,
         rowsPerPage: 15
         // rowsNumber: xx if getting data from a server
-      },
-      subscribe: {
-        message: '',
-        status: true,
-        isPushEnabled: false,
-        text_btn: 'Подписаться',
-        registration: null,
-        url: 'http://192.168.10.82/api/rest/push/save_information'
-      },
-      vapid_keys: 'BPelT85m1o6-0dMF0x-htr5gE85g3IOmKxoJrvZ7z481h5cpiE1uzeAtTHZA67lqSrpl-c7vlho6_qV_uPJC-pU',
-      worker: '/service-worker.js'
+      }
     }
   },
   methods: {
-    postSubscribeObj: function (statusType, subscription, callback) {
-      const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase()
-      const data = { status_type: statusType, subscription: subscription.toJSON(), browser: browser }
-      this.$axios({ method: 'POST', url: this.subscribe.url, headers: { 'Content-Type': 'application/json' }, data: JSON.stringify(data) })
-        .then(callback)
-    },
-    initialiseState: function (reg) {
-      const self = this
-      if (Notification.permission === 'denied') {
-        self.subscribe.message = 'Вы заблокировали доступ к уведомлениям'
-        self.subscribe.text_btn = 'Подписаться'
-        self.subscribe.status = true
-        return
-      }
-      if (!('PushManager' in window)) {
-        self.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
-        self.subscribe.text_btn = 'Подписаться'
-        self.subscribe.status = true
-        return
-      }
-      reg.pushManager.getSubscription().then(
-        function (subscription) {
-          if (subscription) {
-            self.postSubscribeObj('subscribe', subscription,
-              function (response) {
-                if (response.status === 201) {
-                  self.subscribe.message = 'Отписаться от уведомления'
-                  self.subscribe.status = false
-                  self.subscribe.isPushEnabled = true
-                  self.subscribe.text_btn = 'Отписаться'
-                }
-              })
-          }
-        })
-      if (!!(reg.showNotification)) {
-        self.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
-        self.subscribe.text_btn = 'Подписаться'
-        self.subscribe.status = false
-        return
-      }
-    },
     get_table: function () {
       this.loading = true
       this.data = []
@@ -273,101 +215,6 @@ export default {
     copyobr: function (event, row) {
       event.preventDefault()
       navigator.clipboard.writeText(row.nomd)
-    },
-    click_subscr: function () {
-      this.subscribe.status = true
-      if (this.subscribe.isPushEnabled) {
-        return this.unsubscribe(this.subscribe.registration)
-      }
-      return this.subscribe_func(this.subscribe.registration)
-    },
-    urlB64ToUint8Array: function (base64String) {
-      const padding = '='.repeat((4 - base64String.length % 4) % 4)
-      const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/')
-
-      const rawData = window.atob(base64)
-      const outputArray = new Uint8Array(rawData.length)
-
-      for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i)
-      }
-      return outputArray
-    },
-    subscribe_func: function (reg) {
-      const self = this
-      reg.pushManager.getSubscription().then(
-        function (subscription) {
-          // Check if Subscription is available
-          if (subscription) {
-            return subscription
-          }
-
-          const metaObj = self.vapid_keys
-          const applicationServerKey = metaObj.content
-          const options = {
-            userVisibleOnly: true
-          }
-          if (applicationServerKey) {
-            options.applicationServerKey = self.urlB64ToUint8Array(applicationServerKey)
-          }
-          reg.pushManager.subscribe(options)
-            .then(
-              function (subscription) {
-                self.postSubscribeObj('subscribe', subscription,
-                  function (response) {
-                    if (response.status === 201) {
-                      self.subscribe.message = 'Отписаться от уведомления'
-                      self.subscribe.status = false
-                      self.subscribe.isPushEnabled = true
-                      self.subscribe.text_btn = 'Отписаться'
-                    }
-                  })
-              })
-            .catch(
-              function () {
-                console.log('Ошибка подписки.', arguments)
-              })
-        }
-      )
-    },
-    unsubscribe: function (reg) {
-      const self = this
-      reg.pushManager.getSubscription()
-        .then(
-          function (subscription) {
-            if (!subscription) {
-              self.subscribe.status = false
-              self.subscribe.message = 'Подписка на уведомление недоступно'
-              return
-            }
-            self.postSubscribeObj('unsubscribe', subscription,
-              function (response) {
-                // Check if the information is deleted from server
-                if (response.status === 202) {
-                  // Get the Subscription
-                  // Remove the subscription
-                  subscription.unsubscribe()
-                    .then(
-                      function (successful) {
-                        self.subscribe.message = 'Подпишитесь на рассылку push-сообщений'
-                        self.subscribe.status = false
-                        self.subscribe.isPushEnabled = false
-                        self.subscribe.text_btn = 'Подписаться'
-                      }
-                    )
-                    .catch(
-                      function (error) {
-                        self.subscribe.message = 'Отписаться от уведомления'
-                        self.subscribe.status = false
-                        self.subscribe.text_btn = 'Отписаться'
-                      }
-                    )
-                }
-              })
-          }
-        )
     }
   },
   watch: {

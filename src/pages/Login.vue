@@ -1,6 +1,6 @@
 <template>
   <q-layout class="background flex justify-center full-height" :class="heightSize">
-    <q-card class="shadow-10" style="width: 400px;">
+    <q-card class="shadow-10" style="width: 450px;">
       <q-card-section :class="'text-white text-center width-3of4 bg-width-2of5 gt-bg-width-1of4 sm-auto ' + finalBgColor">
         <svg id="logo" viewBox="0 0 483 483"
             style="enable-background:new 0 0 460 460;"
@@ -10,21 +10,50 @@
         <h4 class="q-mb-xs q-mt-md">Форма входа</h4>
         <h4 class="q-mb-xs q-mt-xs">С К И О Г</h4>
       </q-card-section>
-      <q-form @submit="login">
-        <q-card-section class="q-pa-md">
-          <div class="q-gutter-y-md column">
-            <q-input standout v-model="username" name="username" type="text" label="Логин" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
-            <q-input standout v-model="password" name="password" type="password" label="Пароль" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
-          </div>
-        </q-card-section>
-        <q-card-actions class="bg-deep-purple-2" vertical>
-          <q-btn class="full-width" color="red" style="margin-bottom: 4%;" icon-right="send" label="Войти" type="submit" />
-          <q-btn-group>
-            <q-btn color="blue" disable label="Регистрация" />
-            <q-btn color="green" disable label="Вспомнить пароль" />
-          </q-btn-group>
-        </q-card-actions>
-      </q-form>
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="register">
+          <q-form>
+            <q-card-section class="q-pa-md">
+              <div class="q-gutter-y-md column">
+                <q-input standout name="email" type="text" label="Почта" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
+                <q-input standout name="fio" type="text" label="ФИО" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
+                <q-btn class="full-width" color="red" style="margin-bottom: 4%;" icon-right="send" disable label="Подать заявку" type="submit" />
+              </div>
+            </q-card-section>
+          </q-form>
+        </q-tab-panel>
+        <q-tab-panel name="login">
+          <q-form @submit="login" transition-show="jump-down" transition-hide="jump-up">
+            <q-card-section class="q-pa-md">
+              <div class="q-gutter-y-md column">
+                <q-input standout v-model="username" name="username" type="text" label="Логин" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
+                <q-input standout v-model="password" name="password" type="password" label="Пароль" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
+                <q-btn class="full-width" color="red" style="margin-bottom: 4%;" icon-right="send" label="Войти" type="submit" />
+              </div>
+            </q-card-section>
+          </q-form>
+        </q-tab-panel>
+        <q-tab-panel name="passwo">
+          <q-form>
+            <q-card-section class="q-pa-md">
+              <div class="q-gutter-y-md column">
+                <q-input standout name="email" type="text" label="Почта" stack-label :rules="[ val => val && val.length > 0 || 'Обязательное поле']" />
+                <q-btn class="full-width" color="red" style="margin-bottom: 4%;" icon-right="send" disable label="Отправить" type="submit" />
+              </div>
+            </q-card-section>
+          </q-form>
+        </q-tab-panel>
+      </q-tab-panels>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="bg-grey-3 items-center"
+        align="justify"
+      >
+        <q-tab name="register" label="Регистрация" />
+        <q-tab name="login" label="Вход" />
+        <q-tab name="passwo" label="Восстановить пароль" />
+      </q-tabs>
     </q-card>
   </q-layout>
 </template>
@@ -46,7 +75,8 @@ export default {
       password: '',
       bgColor: 'red',
       toneColor: 10,
-      returnUrl: ''
+      returnUrl: '',
+      tab: 'login'
     }
   },
   created () {

@@ -5,11 +5,16 @@
         <q-card class="shadow-3">
           <q-card-section>
             <div class="row">
-              <div class="col-4">
+              <div class="col-12 col-sm-12 col-md-4">
                 <div class="text-h6">{{ title }}</div>
               </div>
-              <q-space />
+              <div class="col-12 col-sm-12 col-md-8 text-right">
               <q-btn-group>
+                <q-btn v-show="false" flat icon="bug_report" @click="$router.replace({ name: 'appeal', params: { action: 'allproblem' }, query: { q1: 'q1' } })">
+                  <q-tooltip>
+                    Тестовая кнопочка
+                  </q-tooltip>
+                </q-btn>
                 <q-btn flat icon="clear" @click="clear_filt">
                   <q-tooltip>
                     Сбросить фильтр
@@ -31,6 +36,7 @@
                   </q-tooltip>
                 </q-btn>
               </q-btn-group>
+              </div>
             </div>
           </q-card-section>
           <q-card-section>
@@ -110,13 +116,13 @@
         <q-card-section>
           <div class="row">
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.temat" square outlined :options="filter_data.cat" option-value='pk' option-label="name" label="Тематика" />
+              <q-select v-model="dialogs_data.filt.temat" square outlined :options="filter_data.cat" option-value='pk' option-label="name" label="Тематика" emit-value />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="name" label="Статус в доброделе" />
+              <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="name" label="Статус в доброделе" emit-value />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" />
+              <q-select v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" emit-value />
             </div>
             <div class="col-12 col-sm-4 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
               <q-input v-model="dialogs_data.filt.dateotv" square outlined label='Дата ответа по доброделу' mask="##.##.####">
@@ -219,11 +225,17 @@ export default {
     },
     clear_filt: function () {
       this.dialogs_data.filt = { temat: null, status: null, ciogv: null }
+      this.$router.replace({ name: 'appeal', params: { action: this.$route.params.action } })
       this.load_table()
     },
     filter_met: function () {
-      this.load_table()
-      this.dialogs.filt = false
+      const params = {}
+      for (const fil in this.dialogs_data.filt) {
+        if (this.dialogs_data.filt[fil]) {
+          params[fil] = this.dialogs_data.filt[fil]
+        }
+      }
+      this.$router.replace({ name: 'appeal', params: { action: 'allproblem' }, query: params })
     },
     load_table: function (action) {
       let url
@@ -235,13 +247,9 @@ export default {
       } else {
         url = action
       }
-      for (const fil in this.dialogs_data.filt) {
-        if (this.dialogs_data.filt[fil]) {
-          if (this.dialogs_data.filt[fil].value) {
-            data.append(fil, this.dialogs_data.filt[fil].value)
-          } else {
-            data.append(fil, this.dialogs_data.filt[fil])
-          }
+      for (const fil in this.$route.query) {
+        if (this.$route.query[fil]) {
+          data.append(fil, this.$route.query[fil])
         }
       }
       this.load = true

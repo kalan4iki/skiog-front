@@ -33,7 +33,7 @@ export default {
   mounted() {
     const data = new FormData()
     data.append('action', this.action)
-    this.$axios({ method: 'POST', url: 'dashboard/', data: data })
+    this.$axios({ method: 'POST', url: 'dashboard/problem', data: data })
       .then((response) => {
         var ctx = document.getElementById(`Chart${this.action}`).getContext('2d');
         this.config.data.labels = response.data.content.subobjects

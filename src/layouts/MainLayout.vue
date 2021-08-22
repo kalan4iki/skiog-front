@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lff">
-    <q-header elevated class="bg-grey">
-      <q-toolbar class="bg-white text-black" style="animation: fadeInDown; animation-duration: 1s;">
+    <q-header elevated class="grad-black">
+      <q-toolbar class="text-black" style="animation: fadeInDown; animation-duration: 1s;">
         <q-btn
           flat
           dense
@@ -81,7 +81,6 @@
 
 <script>
 import Menu from 'components/Menu.vue'
-
 export default {
   name: 'MainLayout',
   components: { Menu },
@@ -136,14 +135,23 @@ export default {
 }
 </script>
 <style scoped>
-.fit {
+  .fit {
+    background: linear-gradient(45deg, #c2c7d0, #C5DDE8)
+  }
+  .grad-black {
+    background: linear-gradient(45deg, #ffffff, #C5DDE8);
+  }
+  .q-page-container {
+    background: linear-gradient(45deg, #f4f6f9, #f4f6f9)
+  }
+  /* .fit {
   background: #343a40;
   color: #c2c7d0;
 }
-.q-page-container {
-  background: #f4f6f9;
-}
-/* .my-title {
+  .q-page-container {
+    background: #f4f6f9
+  }
+ .my-title {
   display: inline-block;
   margin: 0 0.5rem;
   animation: animate__flipInX;
