@@ -1,6 +1,7 @@
 #!/bin/bash
 
 frontend_path='/home/vadim/skiog-back/docker/front/'
+delete_path='/home/vadim/skiog-back/docker/front/*'
 build_path='/home/vadim/skiog-front/dist/spa/*'
 
 if [ -d "dist" ]
@@ -13,4 +14,5 @@ then
   npm install
 fi
 quasar build
-cp -R 'dist/spa/*' $frontend_path
+rm -R $delete_path
+cp -R $build_path $frontend_path
