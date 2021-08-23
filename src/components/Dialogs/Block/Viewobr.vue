@@ -5,7 +5,7 @@
         <q-header class="bg-indigo">
           <q-toolbar>
             <q-btn flat v-close-popup round dense icon="close" />
-            <q-toolbar-title>Обращение №{{ obr.nomd }}</q-toolbar-title>
+            <q-toolbar-title @contextmenu="copyobr">Обращение №{{ obr.nomd }}</q-toolbar-title>
             <a target="_blank" :href="'https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + obr.nomd" style="text-decoration: none; color: white;">
               <q-btn flat dense label="Добродел" />
             </a>
@@ -98,7 +98,7 @@
         </q-page-container>
       </q-layout>
     </q-dialog>
-    <AddmessageVue v-model="dialogs.addmessage" :pk="obr.nomd" :statoptions='statoptions' @closeall='close' />
+    <AddmessageVue v-model="dialogs.addmessage" @refresh="$emit('refresh')" :pk="obr.nomd" :statoptions='statoptions' @closeall='close' />
     <ViewmessVue v-model="dialogs.viewmes" :task="obr" @closeall='close' />
   </div>
 </template>
@@ -149,6 +149,10 @@ export default {
     },
     viewsmen: function () {
       this.dialogs.addmessage = true
+    },
+    copyobr: function (event) {
+      event.preventDefault()
+      navigator.clipboard.writeText(this.obr.nomd)
     }
   },
   mounted () {

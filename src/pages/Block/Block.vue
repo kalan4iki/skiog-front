@@ -83,7 +83,7 @@
         </q-card>
       </div>
     </div>
-    <ViewobrVue v-model="dialogs.view" :obr='task' />
+    <ViewobrVue v-model="dialogs.view" :obr='task' @refresh="get_table" />
     <AddobrVue v-model="dialogs.add" @refresh="get_table" />
   </q-page>
 </template>

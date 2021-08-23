@@ -235,13 +235,16 @@ export default {
         isPushEnabled: false,
         text_btn: 'Подписаться',
         registration: null,
-        url: 'http://192.168.10.82/api/rest/push/save_information'
+        url: 'https://skiog.ru/api/rest/push/save_information'
       },
       vapid_keys: 'BPelT85m1o6-0dMF0x-htr5gE85g3IOmKxoJrvZ7z481h5cpiE1uzeAtTHZA67lqSrpl-c7vlho6_qV_uPJC-pU',
       worker: '/service-worker.js'
     }
   },
   methods: {
+    // notif_email: function () {
+    //   this.$axios()
+    // },
     submit_editpass: function () {
       if (this.dialogs_data.edit_password.reply_new_password !== this.dialogs_data.edit_password.new_password) {
         this.$q.notify({
