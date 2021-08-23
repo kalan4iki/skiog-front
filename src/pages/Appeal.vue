@@ -235,7 +235,7 @@ export default {
           params[fil] = this.dialogs_data.filt[fil]
         }
       }
-      this.$router.replace({ name: 'appeal', params: { action: 'allproblem' }, query: params })
+      this.$router.replace({ name: 'appeal', params: { action: this.$route.params.action }, query: params })
     },
     load_table: function (action) {
       let url
