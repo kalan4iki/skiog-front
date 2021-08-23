@@ -49,7 +49,7 @@
               <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="name" label="Статус в доброделе" emit-value />
             </div>
             <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-              <q-select v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" emit-value />
+              <q-select v-if='$init_perm({ type: "problem", name: "user_executor"})' v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" emit-value />
             </div>
             <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
               <q-input v-model="dialogs_data.filt.datecre_after" square outlined label='Дата создания обращения от'>
@@ -174,6 +174,7 @@ export default {
     await ymaps.ready(['Heatmap'])
       .then(this.init_map)
     this.load_map()
+    setInterval(this.load_map, 1800000)
   },
   methods: {
     podcat_refresh: function () {

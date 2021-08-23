@@ -70,7 +70,8 @@
                 <div class="text-h6">Telegram</div>
               </div>
               <div class="col-12 col-sm-6 col-md-6 text-center">
-                <q-btn color="primary" label="Подключить" @click="dialogs.notifteleg = true" />
+                <q-btn v-if="!uuid.connect" color="primary" label="Подключить" @click="dialogs.notifteleg = true" />
+                <q-btn v-else color="red" label="Отключить" @click="disconnect_telegram" />
               </div>
               <div class="col-12 col-sm-6 col-md-6 text-center q-pb-md">
                 <div class="text-h6">Браузер</div>
@@ -86,7 +87,7 @@
                 <div class="text-h6">Почта</div>
               </div>
               <div class="col-12 col-sm-6 col-md-6 text-center">
-                <q-btn @click="dialogs.email=true" color="primary" label="Подключить" />
+                <q-btn disable @click="dialogs.email=true" color="primary" label="Подключить" />
               </div>
             </div>
           </q-card-section>
@@ -150,12 +151,12 @@
         <q-card-section><div class="text-h6">Процедура подключения оповещений Telegram</div></q-card-section>
         <q-separator />
         <q-card-section>
-          <q-banner class="shadow-3" v-if="uuid">
+          <q-banner class="shadow-3" v-if="uuid.uuid">
             <div class="q-pb-md">
-              Чтобы подключить оповещения в мессенджере Telegram необходимо начать общение с ботом <a href="" @click="open_page('http://t.me/skiog_bot?start='+uuid)">@skiog_bot</a>
+              Чтобы подключить оповещения в мессенджере Telegram необходимо начать общение с ботом <a href="" @click="open_page('http://t.me/skiog_bot?start='+uuid.uuid)">@skiog_bot</a>
             </div>
             <q-banner dense class="bg-accent text-white">
-              Если не получилось привязать аккаунт отправьте боту команду: /start {{uuid}}
+              Если не получилось привязать аккаунт отправьте боту команду: /start {{uuid.uuid}}
               <template v-slot:avatar>
                 <q-btn flat color="white" label="Скопировать" />
               </template>
@@ -167,14 +168,14 @@
               <q-icon name="warning" />
             </template>
             <template v-slot:action>
-              <q-btn flat label="Обновить" @click="get_uuid" />
+              <q-btn flat label="Обновить" @click="connect_telegram" />
             </template>
           </q-banner>
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
           <q-btn v-close-popup label="Закрыть" />
-          <q-btn v-close-popup v-if="uuid" label="Проверить подключение" />
+          <q-btn v-if="uuid.uuid" @click="connect_telegram" label="Проверить подключение" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -228,7 +229,7 @@ export default {
           reply_new_password: null
         }
       },
-      uuid: null,
+      uuid: { uuid: null, connect: null},
       subscribe: {
         message: '',
         status: true,
@@ -286,10 +287,27 @@ export default {
     open_page: function (urls) {
       openURL(urls)
     },
-    get_uuid: function () {
-      this.$axios({ method: 'POST', url: 'notif/get_telegram/' })
+    connect_telegram: function () {
+      this.$axios({ method: 'POST', url: 'notif/get_telegram/connect' })
         .then((response) => {
-          this.uuid = response.data.uuid
+          this.uuid = response.data
+          if (response.data.connect && this.dialogs.notifteleg) {
+            this.dialogs.notifteleg = false
+            this.$q.notify({
+              type: 'positive',
+              message: 'Оповещения в Telegram подключены.'
+            })
+          }
+        })
+    },
+    disconnect_telegram: function () {
+      this.$axios({ method: 'POST', url: 'notif/get_telegram/disconnect' })
+        .then((response) => {
+          this.uuid = response.data
+          this.$q.notify({
+            type: 'positive',
+            message: 'Успешно отключили оповещение в Telegram'
+          })
         })
     },
     get_info: function () {
@@ -437,7 +455,7 @@ export default {
   },
   mounted () {
     this.get_info()
-    this.get_uuid()
+    this.connect_telegram()
     const self = this
     if ('serviceWorker' in navigator) {
       const serviceWorker = this.worker
