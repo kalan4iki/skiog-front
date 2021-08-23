@@ -1,5 +1,5 @@
 #!/bin/bash
-
+git pull
 frontend_path='/home/vadim/skiog-back/docker/front/'
 delete_path='/home/vadim/skiog-back/docker/front/*'
 build_path='/home/vadim/skiog-front/dist/spa/*'
