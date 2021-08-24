@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-bind:value='value' v-on:hide="close" v-on:show="shows" transition-show="slide-left" transition-hide="jump-left">
     <q-card>
-      <q-form @submit="add_ty">
+      <q-form ref="add_ty_form" @submit="add_ty">
         <q-card-section>
           <div class="text-h6">Назначение территориального управления</div>
         </q-card-section>
@@ -9,7 +9,7 @@
         <q-card-section class="q-pt-none">
           <div class="column">
             <div class="col">
-              <q-select v-model="to_value" :options="tos" label="Территариальное управление" :rules="[v => !!v || 'Обязательно поле.']" />
+              <q-select v-model="to_value" :options="tos" label="Территариальное управление" />
             </div>
           </div>
         </q-card-section>
@@ -30,6 +30,7 @@ export default {
   props: ['value', 'pk'],
   methods: {
     close: function () {
+      this.to_value = null
       this.$emit('input', false)
     },
     refresh: function () {
@@ -39,15 +40,22 @@ export default {
       this.to_value = null
     },
     add_ty: function () {
-      this.$axios({ method: 'PATCH', url: 'view/problem/' + this.pk + '/', data: { ciogv: this.to_value.value } })
-        .then((response) => {
-          this.$q.notify({
-            type: 'positive',
-            message: 'Территориальное управление добавлено'
+      if (this.to_value) {
+        this.$axios({ method: 'PATCH', url: 'view/problem/' + this.pk + '/', data: { ciogv: this.to_value.value } })
+          .then((response) => {
+            this.$q.notify({
+              type: 'positive',
+              message: 'Территориальное управление добавлено'
+            })
+            this.$emit('refresh')
+            this.$emit('input', false)
           })
-          this.$emit('refresh')
-          this.$emit('input', false)
+      } else {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Поле ТУ не должно быть пустым'
         })
+      }
     }
   },
   data () {

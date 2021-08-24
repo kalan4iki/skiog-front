@@ -76,13 +76,29 @@
               <q-skeleton height="100px" animation="pulse" />
             </div>
             <div v-else>
-              <q-expansion-item v-for='term in terms' :key="term.pk" :header-class="term.answers !== '0' ? 'text-positive': ''" popup :label="`Ответственный: ${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}`" :caption="`Дата создания - ${term.datecre}. Статус - ${term.statuss}. Срок исполнения - ${term.date}`">
+              <q-expansion-item v-for='term in terms' :key="term.pk" :header-class="term.answers !== '0' ? 'text-positive': ''" default-opened popup :label="`Ответственный: ${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}`" :caption="`Дата создания - ${term.datecre}. Статус - ${term.statuss}. Срок исполнения - ${term.date}`">
+                <template v-slot:header>
+                  <q-item-section avatar>
+                    <div>Ответственный:</div>
+                    <div>{{ `${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}` }}</div>
+                  </q-item-section>
+                  <q-separator vertical/>
+                  <q-item-section class="text-center">
+                    <div>Статус:</div>
+                    <div>{{ term.statuss }}</div>
+                  </q-item-section>
+                  <q-separator vertical />
+                  <q-item-section side>
+                    <div>{{ `Дата создания - ${term.datecre}.` }}
+                    </div>
+                    <div>{{ `Срок исполнения - ${term.date}.` }}</div>
+                  </q-item-section>
+                </template>
                 <q-separator />
                 <q-card>
                   <q-card-section>
-                    <p>Назначил: <b>{{ term.user }}</b>.</p>
-
-                    <p>Текст назначения: {{ term.desck }}</p>
+                    <div>Назначил: <b>{{ term.user }}</b>.</div>
+                    <div v-if="term.desck">Текст назначения: {{ term.desck }}</div>
                   </q-card-section>
                   <q-card-actions>
                     <q-btn-group>
@@ -99,7 +115,7 @@
                   v-if='$init_perm({ type: "problem", name: "user_moderator"})'
                 >
                   <q-list dense style="min-width: 100px" v-if="$init_perm({ type: 'problem', name: 'user_moderator'})">
-                    <q-item disable clickable v-close-popup>
+                    <q-item clickable v-close-popup @click="open_edit_term(term.pk)">
                       <q-item-section>Редактировать</q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="del_term(term.pk)">
@@ -274,11 +290,11 @@
           <q-card-section class="">
             <div class="column">
               <div class="col-12 col-sm-4 col-md-6 q-ml-xs q-mr-xs q-mb-md">
-                <q-input  label='Срок' v-model="dialogs_data.term.srok" mask="####-##-##" :rules="[date_rul]">
+                <q-input  label='Срок' v-model="dialogs_data.term.srok" mask="##.##.####" :rules="[date_rul]">
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="dialogs_data.term.srok" mask="YYYY-MM-DD">
+                        <q-date v-model="dialogs_data.term.srok" mask="DD.MM.YYYY">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Закрыть" color="primary" flat />
                           </div>
@@ -468,21 +484,24 @@
     </q-dialog>
     <Fact v-model="dialogs.fact" :pk="obr.pk" @refresh='get_problem' />
     <Ty v-model="dialogs.to" :pk="obr.pk" @refresh='get_problem' />
+    <Editterm v-model="dialogs.edit_term" :pk="edit_term_pk" @refresh='get_terms' />
   </q-page>
 </template>
 <script>
 import Ty from 'components/Dialogs/Appl/Ty_app.vue'
 import Fact from 'components/Dialogs/Appl/Fact.vue'
 import fileDownload from 'js-file-download'
+import Editterm from 'components/Dialogs/Appl/Edit_term.vue'
 import { openURL } from 'quasar'
 export default {
   name: 'Number',
-  components: { Ty, Fact },
+  components: { Ty, Fact, Editterm },
   data () {
     return {
-      dialogs: { term: false, to: false, img: false, fact: false, answer: false, view_answer: false },
-      date_rul: v => /^-?[\d]+-[0-1]\d-[0-3]\d$/.test(v),
+      dialogs: { term: false, to: false, img: false, fact: false, answer: false, view_answer: false, edit_term: false },
+      date_rul: v => /^\d{2}.\d{2}.\d{4}$/.test(v),
       form_term: null,
+      edit_term_pk: null,
       dialogs_data: {
         term: {
           tabs: 'org',
@@ -541,6 +560,10 @@ export default {
   computed: {
   },
   methods: {
+    open_edit_term: function (pk) {
+      this.edit_term_pk = pk
+      this.dialogs.edit_term = true
+    },
     down_files: function (pk) {
       this.$axios({ method: 'GET', url: '/term/answer/downimage/' + pk, responseType: 'blob' })
         .then((response) => {

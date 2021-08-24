@@ -92,8 +92,9 @@
                       <q-item clickable v-close-popup @click="opendialogfact(props.row.pk)">
                         <q-item-section>Добавить факт</q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup @click="open_page('https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + props.row.nomdobr)">
-                        <q-item-section>Перейти на добродел</q-item-section>
+                      <q-item clickable v-close-popup>
+                        <a class="text-black" :href="'https://vmeste.mosreg.ru/CardInNewPage?show=/Topic?id=' + props.row.nomdobr" target="_blank" style="text-decoration: none;">Перейти на добродел</a>
+                        <!-- <q-item-section>Перейти на добродел</q-item-section> -->
                       </q-item>
                       <q-separator />
                     </q-list>
@@ -157,7 +158,7 @@
 import Tyapp from 'components/Dialogs/Appl/Ty_app.vue'
 import Fact from 'components/Dialogs/Appl/Fact.vue'
 import fileDownload from 'js-file-download'
-import { openURL } from 'quasar'
+// import { openURL } from 'quasar'
 export default {
   name: 'Appeal',
   components: { Tyapp, Fact },
@@ -166,10 +167,10 @@ export default {
       columns: [
         { label: 'ID в системе', name: 'pk', field: 'pk', align: 'center', headerStyle: 'width: 100px' },
         { label: 'Номер добродела', name: 'nomdobr', field: 'nomdobr', align: 'center', headerStyle: 'width: 110px' },
-        { label: 'Дата ответа по доброделу', name: 'dateotv', field: 'dateotv', align: 'center', headerStyle: 'width: 120px' },
+        { label: 'Дата ответа по доброделу', name: 'dateotv', field: 'dateotv', align: 'center', headerStyle: 'width: 120px', sortable: true },
         { label: 'Адрес', name: 'adres', field: 'adres', align: 'left', style: 'max-width: 450px; white-space: normal' },
-        { label: 'Тематика', name: 'temat__name', field: 'temat__name', align: 'left', style: 'max-width: 150px; white-space: normal' },
-        { label: 'Подкатегория', name: 'podcat__name', field: 'podcat__name', align: 'left', style: 'max-width: 200px; white-space: normal' },
+        { label: 'Тематика', name: 'temat__name', field: 'temat__name', align: 'left', style: 'max-width: 150px; white-space: normal', sortable: true },
+        { label: 'Подкатегория', name: 'podcat__name', field: 'podcat__name', align: 'left', style: 'max-width: 200px; white-space: normal', sortable: true },
         { label: 'Статус в доброделе', name: 'status__name', align: 'left', field: 'status__name', style: 'max-width: 100px; white-space: normal' },
         { label: 'Текст', name: 'text', field: 'text', align: 'left' },
         { label: 'Сообщения', name: 'chats', field: 'chats', align: 'center', sortable: false }
@@ -221,7 +222,9 @@ export default {
   },
   methods: {
     open_page: function (urls) {
-      openURL(urls)
+      window.open(urls, '_blank')
+      window.focus()
+      // openURL(urls, '_blank', { noreferrer: false })
     },
     clear_filt: function () {
       this.dialogs_data.filt = { temat: null, status: null, ciogv: null }

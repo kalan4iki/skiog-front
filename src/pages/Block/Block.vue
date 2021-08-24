@@ -222,25 +222,27 @@ export default {
       this.get_table()
     },
     me: function (newSelect) {
-      localStorage.selectMe = newSelect
+      localStorage.block_selectMe = newSelect
       this.get_table()
     }
   },
   mounted () {
-    if (localStorage.selectMe) this.selectMe = localStorage.selectMe
-    const self = this
-    this.get_table()
-    if ('serviceWorker' in navigator) {
-      const serviceWorker = this.worker
-      navigator.serviceWorker.register(serviceWorker).then(
-        function (reg) {
-          self.subscribe.registration = reg
-          self.initialiseState(reg)
-        })
-    } else {
-      this.subscribe.message = 'Оповещения в ващем браузере не поддерживаются'
-      this.subscribe.status = true
+    if (localStorage.block_selectMe) {
+      this.me = localStorage.block_selectMe === 'true'
     }
+    // const self = this
+    this.get_table()
+    // if ('serviceWorker' in navigator) {
+    //   const serviceWorker = this.worker
+    //   navigator.serviceWorker.register(serviceWorker).then(
+    //     function (reg) {
+    //       self.subscribe.registration = reg
+    //       self.initialiseState(reg)
+    //     })
+    // } else {
+    //   this.subscribe.message = 'Оповещения в ващем браузере не поддерживаются'
+    //   this.subscribe.status = true
+    // }
   }
 }
 </script>
