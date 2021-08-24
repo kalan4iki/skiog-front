@@ -49,6 +49,9 @@
               <q-select v-model="dialogs_data.filt.status" square outlined :options="filter_data.status" option-value='pk' option-label="name" label="Статус в доброделе" emit-value />
             </div>
             <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
+              <q-select v-model="dialogs_data.filt.terms__org" square outlined :options="filter_data.org" option-value='pk' option-label="name" label="Организация" emit-value />
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
               <q-select v-if='$init_perm({ type: "problem", name: "user_executor"})' v-model="dialogs_data.filt.ciogv" square outlined :options="filter_data.to" option-value='pk' option-label="name" label="Тер. Управление" emit-value />
             </div>
             <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
@@ -99,7 +102,7 @@
             <div class="col-12 col-sm-6 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
               <q-toggle
                 v-model="dialogs_data.filt.visible"
-                label="Показывать скрытые"
+                label="Показывать закрытые"
               />
             </div>
           </div>
@@ -127,7 +130,8 @@ export default {
         cat: null,
         status: null,
         to: null,
-        podcat: null
+        podcat: null,
+        org: null
       },
       type_maps: 'Обычная',
       dialogs_data: {
@@ -139,7 +143,8 @@ export default {
           podcat: null,
           datecre_after: null,
           datecre_before: null,
-          visible: false
+          visible: false,
+          terms__org: null
         },
       },
       settings: {
@@ -282,7 +287,8 @@ export default {
         podcat: null,
         datecre_after: null,
         datecre_before: null,
-        visible: false
+        visible: false,
+        terms__org: null
       }
       this.load_map()
     },
@@ -314,6 +320,7 @@ export default {
           this.filter_data.cat = response.data.temat
           this.filter_data.to = response.data.to
           this.filter_data.status = response.data.status
+          this.filter_data.org = response.data.orgs
           this.loading_map = false
         })
     }

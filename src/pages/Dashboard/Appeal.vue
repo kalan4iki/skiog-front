@@ -16,12 +16,19 @@
                 <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Выгрузка по автору" disable/>
               </q-btn-group>
             </q-banner>
-            <q-banner class="shadow-3">
+            <q-banner class="shadow-3 q-mb-sm">
               <div class="text-h6">ТО</div>
               <p/>
               <q-btn-group outline>
                 <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Отчет за год" />
                 <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Отчет за текущий месяц" />
+              </q-btn-group>
+            </q-banner>
+            <q-banner class="shadow-3">
+              <div class="text-h6">Организации</div>
+              <p/>
+              <q-btn-group outline>
+                <q-btn outline v-if='$init_perm({ type: "problem", name: "user_moderator"})' label="Фильтрация" @click="dialogs.orgs = true" />
               </q-btn-group>
             </q-banner>
           </q-card-section>
@@ -138,6 +145,7 @@
         </q-form>
       </q-card>
     </q-dialog>
+    <Org v-model="dialogs.orgs" />
   </q-page>
 </template>
 <script>
@@ -146,16 +154,18 @@ import fileDownload from 'js-file-download'
 import Terms from 'components/Charts/Terms.vue'
 import Newobr from 'components/Charts/Newobr.vue'
 import TO from 'components/Charts/TO.vue'
+import Org from 'components/Dialogs/Dashboard/Org.vue'
 export default {
   name: 'Appeal',
   components: {
     Terms,
     Newobr,
-    TO
+    TO,
+    Org
   },
   data () {
     return {
-      dialogs: { per: false },
+      dialogs: { per: false, orgs: false },
       dialogs_data: { per: { from: null, to: null } },
       charts: { terms: false, newobr: false, TO: false }
     }
