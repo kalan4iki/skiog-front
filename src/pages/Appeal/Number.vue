@@ -77,7 +77,7 @@
             </div>
             <div v-else>
               <q-expansion-item v-for='term in terms' :key="term.pk" :header-class="term.answers !== '0' ? 'text-positive': ''" default-opened popup :label="`Ответственный: ${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}`" :caption="`Дата создания - ${term.datecre}. Статус - ${term.statuss}. Срок исполнения - ${term.date}`">
-                <template v-slot:header>
+                <!-- <template v-slot:header>
                   <q-item-section avatar>
                     <div>Ответственный:</div>
                     <div>{{ `${(term.org) ? term.org: ''} ${(term.curat) ? ' | ' + term.curat: ''} ${(term.curatuser) ? ' | ' + term.curatuser: ''}` }}</div>
@@ -93,7 +93,7 @@
                     </div>
                     <div>{{ `Срок исполнения - ${term.date}.` }}</div>
                   </q-item-section>
-                </template>
+                </template> -->
                 <q-separator />
                 <q-card>
                   <q-card-section>
