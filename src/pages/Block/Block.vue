@@ -85,22 +85,24 @@
     </div>
     <ViewobrVue v-model="dialogs.view" :obr='task' @refresh="get_table" />
     <AddobrVue v-model="dialogs.add" @refresh="get_table" />
+    <Delobr v-model="dialogs.delobr" :pk="delpk" />
   </q-page>
 </template>
 
 <script>
-
+import Delobr from 'components/Dialogs/Block/Delobr.vue'
 import ViewobrVue from 'components/Dialogs/Block/Viewobr.vue'
 import AddobrVue from 'components/Dialogs/Block/Addobr.vue'
 
 export default {
   name: 'BlockMain',
-  components: { ViewobrVue, AddobrVue },
+  components: { ViewobrVue, AddobrVue, Delobr },
   data () {
     return {
       dialogs: {
         view: false,
-        add: false
+        add: false,
+        delobr: false
       },
       me: false,
       category: [
@@ -161,6 +163,7 @@ export default {
         message: false,
         times: null
       },
+      delpk: null,
       initialPagination: {
         sortBy: '',
         descending: false,
@@ -214,7 +217,12 @@ export default {
     },
     copyobr: function (event, row) {
       event.preventDefault()
-      navigator.clipboard.writeText(row.nomd)
+      if (this.$init_perm({ type: 'block', name: 'superuser' })) {
+        this.delpk = row.pk
+        this.dialogs.delobr = true
+      } else {
+        navigator.clipboard.writeText(row.nomd)
+      }
     }
   },
   watch: {

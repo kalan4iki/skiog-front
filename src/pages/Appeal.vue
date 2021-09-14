@@ -10,7 +10,7 @@
               </div>
               <div class="col-12 col-sm-12 col-md-8 text-right">
               <q-btn-group>
-                <q-btn v-show="false" flat icon="bug_report" @click="$router.replace({ name: 'appeal', params: { action: 'allproblem' }, query: { q1: 'q1' } })">
+                <q-btn v-show="false" flat icon="bug_report" @click="initialPagination.rowsNumber += 50">
                   <q-tooltip>
                     Тестовая кнопочка
                   </q-tooltip>
@@ -45,10 +45,12 @@
               :columns="columns"
               dense
               row-key="nomdobr"
-              :pagination="initialPagination"
+              :pagination.sync="initialPagination"
               bordered
               :loading='load'
               separator='cell'
+              @request="test_pag"
+              binary-state-sort
             >
               <template v-slot:body="props">
                 <q-tr :props="props">
@@ -158,6 +160,7 @@
 import Tyapp from 'components/Dialogs/Appl/Ty_app.vue'
 import Fact from 'components/Dialogs/Appl/Fact.vue'
 import fileDownload from 'js-file-download'
+
 // import { openURL } from 'quasar'
 export default {
   name: 'Appeal',
@@ -169,9 +172,9 @@ export default {
         { label: 'Номер добродела', name: 'nomdobr', field: 'nomdobr', align: 'center', headerStyle: 'width: 110px' },
         { label: 'Дата ответа по доброделу', name: 'dateotv', field: 'dateotv', align: 'center', headerStyle: 'width: 120px', sortable: true },
         { label: 'Адрес', name: 'adres', field: 'adres', align: 'left', style: 'max-width: 450px; white-space: normal' },
-        { label: 'Тематика', name: 'temat__name', field: 'temat__name', align: 'left', style: 'max-width: 150px; white-space: normal', sortable: true },
-        { label: 'Подкатегория', name: 'podcat__name', field: 'podcat__name', align: 'left', style: 'max-width: 200px; white-space: normal', sortable: true },
-        { label: 'Статус в доброделе', name: 'status__name', align: 'left', field: 'status__name', style: 'max-width: 100px; white-space: normal' },
+        { label: 'Тематика', name: 'temat', field: 'temat', align: 'left', style: 'max-width: 150px; white-space: normal', sortable: true },
+        { label: 'Подкатегория', name: 'podcat', field: 'podcat', align: 'left', style: 'max-width: 200px; white-space: normal', sortable: true },
+        { label: 'Статус в доброделе', name: 'status', align: 'left', field: 'status', style: 'max-width: 100px; white-space: normal' },
         { label: 'Текст', name: 'text', field: 'text', align: 'left' },
         { label: 'Сообщения', name: 'chats', field: 'chats', align: 'center', sortable: false }
       ],
@@ -207,13 +210,16 @@ export default {
         sortBy: '',
         descending: false,
         page: 1,
-        rowsPerPage: 15
-        // rowsNumber: xx if getting data from a server
+        rowsPerPage: 15,
+        rowsNumber: 10
       },
       inputTO: null,
       url: '',
-      inputfact: null
+      inputfact: null,
+      pagesNumber: 1
     }
+  },
+  computed: {
   },
   watch: {
     $route (to, from) {
@@ -221,12 +227,25 @@ export default {
     }
   },
   methods: {
+    test_pag: function (event) {
+      this.initialPagination.page = event.pagination.page
+      this.initialPagination.sortBy = event.pagination.sortBy
+      if (event.pagination.rowsPerPage === 0) {
+        this.initialPagination.rowsPerPage = event.pagination.rowsNumber
+      } else {
+        this.initialPagination.rowsPerPage = event.pagination.rowsPerPage
+      }
+      this.filter_met()
+      this.load_table()
+    },
     open_page: function (urls) {
       window.open(urls, '_blank')
       window.focus()
       // openURL(urls, '_blank', { noreferrer: false })
     },
     clear_filt: function () {
+      this.initialPagination.page = 1
+      this.initialPagination.rowsPerPage = 15
       this.dialogs_data.filt = { temat: null, status: null, ciogv: null }
       this.$router.replace({ name: 'appeal', params: { action: this.$route.params.action } })
       this.load_table()
@@ -238,11 +257,17 @@ export default {
           params[fil] = this.dialogs_data.filt[fil]
         }
       }
+      params.page = this.initialPagination.page
+      params.page_size = this.initialPagination.rowsPerPage
+      if (this.initialPagination.sortBy) {
+        params.ordering = this.initialPagination.sortBy
+      }
       this.$router.replace({ name: 'appeal', params: { action: this.$route.params.action }, query: params })
     },
-    load_table: function (action) {
+    get_data: function (action) {
       let url
-      const data = new FormData()
+      const data = new URLSearchParams()
+      // const data = new FormData()
       if (action == null) {
         url = this.$route.params.action
       } else if (action.type === 'click') {
@@ -250,20 +275,37 @@ export default {
       } else {
         url = action
       }
+      data.append('action', url)
+      // data.append('page', this.initialPagination.page)
       for (const fil in this.$route.query) {
         if (this.$route.query[fil]) {
           data.append(fil, this.$route.query[fil])
         }
       }
+      if (!data.get('page_size')) {
+        data.append('page_size', this.initialPagination.rowsPerPage)
+      }
+      return data
+    },
+    load_table: function (action) {
       this.load = true
-      this.$axios({ method: 'POST', url: `/allproblem/${url}`, data: data })
+      const data = this.get_data()
+      this.$axios({ method: 'GET', url: 'view/allproblem/', params: data })
         .then(response => {
-          this.title = response.data.title
-          this.data = response.data.list
+          this.data = response.data.results.data
+          this.initialPagination.rowsNumber = response.data.count
+          this.title = response.data.results.title
           this.load = false
-          this.filter_data.cat = response.data.filter.temat
-          this.filter_data.status = response.data.filter.status
-          this.filter_data.to = response.data.filter.ciogv
+        })
+    },
+    load_filter: function () {
+      const datafilt = this.get_data()
+      datafilt.append('type', 'filter')
+      this.$axios({ method: 'GET', url: 'view/allproblem/', params: datafilt })
+        .then(response => {
+          this.filter_data.cat = response.data.temat
+          this.filter_data.status = response.data.status
+          this.filter_data.to = response.data.ciogv
         })
     },
     exports_table: function () {
@@ -302,8 +344,15 @@ export default {
     }
   },
   mounted () {
+    if ('page' in this.$route.query) {
+      this.initialPagination.page = this.$route.query.page
+    }
+    if ('page_size' in this.$route.query) {
+      this.initialPagination.rowsPerPage = this.$route.query.page_size
+    }
     this.url = this.$route.params.action
     this.load_table()
+    this.load_filter()
     this.get_to()
   }
 }

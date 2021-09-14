@@ -153,14 +153,9 @@
         <q-card-section>
           <q-banner class="shadow-3" v-if="uuid.uuid">
             <div class="q-pb-md">
-              Чтобы подключить оповещения в мессенджере Telegram необходимо начать общение с ботом <a href="" @click="open_page('http://t.me/skiog_bot?start='+uuid.uuid)">@skiog_bot</a>
+              Чтобы подключить оповещения в мессенджере Telegram необходимо начать общение с ботом @skiog_bot
             </div>
-            <q-banner dense class="bg-accent text-white">
-              Если не получилось привязать аккаунт отправьте боту команду: /start {{uuid.uuid}}
-              <template v-slot:avatar>
-                <q-btn flat color="white" label="Скопировать" />
-              </template>
-            </q-banner>
+            <q-btn color="primary" class="full-width" @click="open_page('http://t.me/skiog_bot?start='+uuid.uuid)" label="Подключить" />
           </q-banner>
           <q-banner class="bg-warning" v-else>
             Не получается получить токен авторизации. Обратитесь к системному администратору.
