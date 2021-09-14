@@ -200,6 +200,17 @@ export default {
     },
     init_map: function (type=1) {
       if (!this.curr_map) {
+        const inputSearch = new ymaps.control.SearchControl({
+              options: {
+                  // Пусть элемент управления будет
+                  // в виде поисковой строки.
+                  size: 'large',
+                  // Включим возможность искать
+                  // не только топонимы, но и организации.
+                  provider: 'yandex#search'            
+              }
+          })
+        this.controls.push(inputSearch)
         this.curr_map = new ymaps.Map('map', {
           center: this.coords,
           zoom: this.zoom,

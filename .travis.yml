@@ -1,0 +1,21 @@
+language: node_js
+
+node_js:
+  - "16"
+
+services:
+  - docker
+
+before_install:
+  - npm i -g @quasar/cli
+  - npm install
+  - quasar build
+
+install:
+  - docker build -t kalan4ik/skiog-front .
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
