@@ -12,7 +12,7 @@ before_install:
   - quasar build
 
 install:
-  - docker build -t kalan4ik/skiog-front .
+  - docker build -t skiog/front .
 
 deploy:
   provider: script
