@@ -70,8 +70,9 @@
               :data="data"
               :columns="columns"
               row-key="nomdobr"
-              :pagination="initialPagination"
               bordered
+              :pagination.sync="initialPagination"
+              @request="load_page"
               :filter="search"
               :loading='loading'
               separator='cell'
@@ -140,7 +141,7 @@ export default {
       tab: 0,
       columns: [
         { label: 'ID', name: 'pk', field: 'pk', align: 'center', headerStyle: 'width: 70px' },
-        { label: 'Номер обращения', name: 'nomd', field: 'nomd', align: 'left', headerStyle: 'width: 160px; white-space: normal' },
+        { label: 'Номер обращения', name: 'nomdobr', field: 'nomdobr', align: 'left', headerStyle: 'width: 160px; white-space: normal' },
         { label: 'Дата создания', name: 'datecre', field: 'datecre', align: 'center', style: 'width: 140px; white-space: normal' },
         { label: 'Статус', name: 'status', field: 'status', align: 'left', style: 'width: 150px; white-space: normal' },
         { label: 'Пользователь', name: 'user', field: 'user', align: 'left', style: 'width: 140px; white-space: normal' },
@@ -154,7 +155,7 @@ export default {
       task: {
         last_text: '',
         text: '',
-        nomd: '',
+        nomdobr: '',
         pk: '',
         status: '',
         datecre: '',
@@ -168,22 +169,37 @@ export default {
         sortBy: '',
         descending: false,
         page: 1,
-        rowsPerPage: 15
-        // rowsNumber: xx if getting data from a server
+        rowsPerPage: 15,
+        rowsNumber: 10
       }
     }
   },
   methods: {
+    load_page: function (event) {
+      this.initialPagination.page = event.pagination.page
+      this.initialPagination.sortBy = event.pagination.sortBy
+      if (event.pagination.rowsPerPage === 0) {
+        this.initialPagination.rowsPerPage = event.pagination.rowsNumber
+      } else {
+        this.initialPagination.rowsPerPage = event.pagination.rowsPerPage
+      }
+      this.get_table()
+    },
     get_table: function () {
       this.loading = true
       this.data = []
       const params = new URLSearchParams()
       params.append('status', 'status-' + this.category[this.tab].nom)
       params.append('selectme', this.me)
-      this.$axios
-        .post('block/table/', params)
+      params.append('page', this.initialPagination.page)
+      params.append('page_size', this.initialPagination.rowsPerPage)
+      if (this.initialPagination.sortBy) {
+        params.append('ordering', this.initialPagination.sortBy)
+      }
+      this.$axios({ methods: 'GET', url: 'block/view/table/', params })
         .then(response => {
-          this.data = response.data.appe
+          this.data = response.data.results.data
+          this.initialPagination.rowsNumber = response.data.count
           this.loading = false
         })
         .catch(error => {
@@ -197,7 +213,7 @@ export default {
       event.preventDefault()
       const params = new URLSearchParams()
       if (row) {
-        params.append('pk', row.nomd)
+        params.append('pk', row.nomdobr)
       } else {
         params.append('pk', this.searchnom)
       }
@@ -221,12 +237,19 @@ export default {
         this.delpk = row.pk
         this.dialogs.delobr = true
       } else {
-        navigator.clipboard.writeText(row.nomd)
+        navigator.clipboard.writeText(row.nomdobr)
       }
     }
   },
   watch: {
     tab: function (newTab, oldTab) {
+      this.initialPagination = {
+        sortBy: '',
+        descending: false,
+        page: 1,
+        rowsPerPage: 15,
+        rowsNumber: 10
+      }
       this.get_table()
     },
     me: function (newSelect) {
@@ -238,19 +261,7 @@ export default {
     if (localStorage.block_selectMe) {
       this.me = localStorage.block_selectMe === 'true'
     }
-    // const self = this
     this.get_table()
-    // if ('serviceWorker' in navigator) {
-    //   const serviceWorker = this.worker
-    //   navigator.serviceWorker.register(serviceWorker).then(
-    //     function (reg) {
-    //       self.subscribe.registration = reg
-    //       self.initialiseState(reg)
-    //     })
-    // } else {
-    //   this.subscribe.message = 'Оповещения в ващем браузере не поддерживаются'
-    //   this.subscribe.status = true
-    // }
   }
 }
 </script>

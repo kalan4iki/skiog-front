@@ -20,7 +20,8 @@ const routes = [
       { path: '/maps', name: 'maps', component: () => import('src/pages/Maps.vue'), meta: { requiresAuth: true } },
       { path: '/admin/users', name: 'admin_users', component: () => import('src/pages/Admin/Users.vue'), meta: { perm: { type: 'problem', name: 'superuser' } } },
       { path: '/admin/block', name: 'admin_block', component: () => import('src/pages/Admin/Block.vue'), meta: { perm: { type: 'problem', name: 'superuser' } } },
-      { path: '/admin/parsing', name: 'admin_parsing', component: () => import('src/pages/Admin/Parsing.vue'), meta: { perm: { type: 'problem', name: 'superuser' } } }
+      { path: '/admin/parsing', name: 'admin_parsing', component: () => import('src/pages/Admin/Parsing.vue'), meta: { perm: { type: 'problem', name: 'superuser' } } },
+      { path: '/taskmanager/tasks', name: 'tasks_list', component: () => import('src/pages/Taskmanager/Main.vue'), meta: { perm: { type: 'problem', name: 'superuser' } } }
     ]
   },
   { path: '/login', name: 'login', component: () => import('pages/Login.vue') },

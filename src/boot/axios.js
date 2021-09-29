@@ -12,7 +12,8 @@ export default (({ app, router, store }) => {
     }
   } else {
     config = {
-      baseURL: `${window.location.origin}/api/rest/`,
+      // baseURL: `${window.location.origin}/api/rest/`,
+      baseURL: `https://skiog.ru/api/rest/`,
       // timeout: 60 * 1000, // Timeout
       withCredentials: true, // Check cross-site Access-Control
     }
