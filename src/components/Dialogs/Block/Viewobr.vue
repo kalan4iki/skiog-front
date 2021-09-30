@@ -79,7 +79,7 @@
                 />
               </div>
               <div class="col-12 col-sm-6 col-md-6 q-pb-md q-pl-xs q-pr-xs">
-                <q-btn class="full-width" @click="down_files" :disable='!obr.message || !obr.files_message' color="indigo" label="Скачать файлы" />
+                <q-btn class="full-width" @click="down_files" :disable='!(obr.image || obr.files_message)' color="indigo" label="Скачать файлы" />
               </div>
               <div class="col-12 col-sm-6 col-md-6 q-pb-md q-pl-xs q-pr-xs">
                 <q-btn class="full-width" :disable='!obr.message' color="indigo" @click="dialogs.viewmes = true" label="Сообщения" />
