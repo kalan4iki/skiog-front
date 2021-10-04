@@ -10,6 +10,26 @@
               </div>
               <div class="col-12 col-sm-12 col-md-8 text-right">
               <q-btn-group>
+                <q-btn-dropdown icon="visibility">
+                  <q-list>
+                    <q-item clickable v-close-popup :active="!model_grid" @click="grid_change(false)" >
+                      <q-item-section avatar>
+                        <q-avatar icon="toc" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Режим таблицы</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup :active="model_grid" @click="grid_change(true)" >
+                      <q-item-section avatar>
+                        <q-avatar icon="apps" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Режим карточек</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
                 <q-btn v-show="false" flat icon="bug_report" @click="initialPagination.rowsNumber += 50">
                   <q-tooltip>
                     Тестовая кнопочка
@@ -41,6 +61,7 @@
           </q-card-section>
           <q-card-section>
             <q-table
+              :grid='model_grid'
               :data="data"
               :columns="columns"
               dense
@@ -216,7 +237,8 @@ export default {
       inputTO: null,
       url: '',
       inputfact: null,
-      pagesNumber: 1
+      pagesNumber: 1,
+      model_grid: false
     }
   },
   computed: {
@@ -227,6 +249,10 @@ export default {
     }
   },
   methods: {
+    grid_change: function (ed) {
+      this.model_grid = ed
+      localStorage.appeal_grid = ed
+    },
     test_pag: function (event) {
       this.initialPagination.page = event.pagination.page
       this.initialPagination.sortBy = event.pagination.sortBy
@@ -344,6 +370,9 @@ export default {
     }
   },
   mounted () {
+    if (localStorage.appeal_grid) {
+      this.model_grid = localStorage.appeal_grid === 'true'
+    }
     if ('page' in this.$route.query) {
       this.initialPagination.page = this.$route.query.page
     }

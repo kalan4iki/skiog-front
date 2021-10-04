@@ -43,7 +43,7 @@
               <div class="col-12 col-sm-3 col-md-3">
                  <div class="text-h6">{{ category[tab]['text'] }}</div>
               </div>
-              <div class="col-12 col-sm-9 col-md-6">
+              <div class="col-12 col-sm-9 col-md-3">
                 <q-input
                     v-model="search"
                     square
@@ -55,7 +55,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-12 col-sm-2 col-md-3" align="right">
+              <div class="col-12 col-sm-6 col-md-3" align="right">
                 <q-toggle
                   v-model="me"
                   color="red"
@@ -63,10 +63,33 @@
                   left-label
                 />
               </div>
+              <div class="col-12 col-sm-6 col-md-3" align="right">
+                <q-btn-dropdown icon="visibility">
+                  <q-list>
+                    <q-item clickable v-close-popup :active="!model_grid" @click="grid_change(false)" >
+                      <q-item-section avatar>
+                        <q-avatar icon="toc" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Режим таблицы</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup :active="model_grid" @click="grid_change(true)" >
+                      <q-item-section avatar>
+                        <q-avatar icon="apps" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Режим карточек</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </div>
             </div>
           </q-card-section>
           <q-card-section>
             <q-table
+              :grid='model_grid'
               :data="data"
               :columns="columns"
               row-key="nomdobr"
@@ -100,6 +123,7 @@ export default {
   components: { ViewobrVue, AddobrVue, Delobr },
   data () {
     return {
+      model_grid: false,
       dialogs: {
         view: false,
         add: false,
@@ -175,6 +199,10 @@ export default {
     }
   },
   methods: {
+    grid_change: function (ed) {
+      this.model_grid = ed
+      localStorage.block_grid = ed
+    },
     load_page: function (event) {
       this.initialPagination.page = event.pagination.page
       this.initialPagination.sortBy = event.pagination.sortBy
@@ -260,6 +288,9 @@ export default {
   mounted () {
     if (localStorage.block_selectMe) {
       this.me = localStorage.block_selectMe === 'true'
+    }
+    if (localStorage.block_grid) {
+      this.model_grid = localStorage.block_grid === 'true'
     }
     this.get_table()
   }

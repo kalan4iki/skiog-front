@@ -106,11 +106,11 @@
           <q-card-section>
             <div class="row">
               <div class="col-12 col-sm-12 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-                <q-input  label='Дата создания обращения от' v-model="dialogs_data.per.from" mask="####-##-##">
+                <q-input  label='Дата создания обращения от' v-model="dialogs_data.per.from" mask="##-##-####">
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="dialogs_data.per.from" mask="YYYY-MM-DD">
+                        <q-date v-model="dialogs_data.per.from" mask="DD-MM-YYYY">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Закрыть" color="primary" flat />
                           </div>
@@ -121,11 +121,11 @@
                 </q-input>
               </div>
               <div class="col-12 col-sm-12 col-md-6 q-pl-xs q-pr-xs q-pb-sm">
-                <q-input  label='Дата создания обращения до' v-model="dialogs_data.per.to" mask="####-##-##">
+                <q-input  label='Дата создания обращения до' v-model="dialogs_data.per.to" mask="##-##-####">
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="dialogs_data.per.to" mask="YYYY-MM-DD">
+                        <q-date v-model="dialogs_data.per.to" mask="DD-MM-YYYY">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Закрыть" color="primary" flat />
                           </div>
@@ -177,7 +177,7 @@ export default {
       data.append('datebefore', this.dialogs_data.per.to)
       data.append('action', '8')
       data.append('front', true)
-      this.$axios({ method: 'POST', url: 'dashboard/problem', responseType: 'blob', data: data })
+      this.$axios({ method: 'POST', url: 'dashboard/problem', responseType: 'blob', data: data, timeout: 0 })
         .then((response) => {
           console.log(response)
           fileDownload(response.data, `export-period.xlsx`)
