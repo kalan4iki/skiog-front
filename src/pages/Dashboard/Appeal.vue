@@ -179,8 +179,14 @@ export default {
       data.append('front', true)
       this.$axios({ method: 'POST', url: 'dashboard/problem', responseType: 'blob', data: data, timeout: 0 })
         .then((response) => {
-          console.log(response)
-          fileDownload(response.data, `export-period.xlsx`)
+          if ('context' in response.data) {
+            this.$q.notify({
+              type: 'positive',
+              message: response.data.context.message
+            })
+          } else {
+            fileDownload(response.data, `export-period.xlsx`)
+          }
           this.dialogs.per = false
           this.dialogs_data.per = { form: null, to: null }
         })
